@@ -144,10 +144,22 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
 
     @IBAction func googlePressed(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
+
+        if appGoogleDrive.isLogined() {
+            googlePickFile()
+        }
+        else {
+            appGoogleDrive.signIn(vc: root!) {
+                self.googlePickFile()
+            }
+        }
+    }
+
+    private func googlePickFile() {
         appGoogleDrive.onFileDownloaded = onFileDownloaded
         appGoogleDrive.showFilePicker(vc: root!)
     }
-
+    
     private func onFileDownloaded(data: Data, name: String) {
         let docsPath = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!)
         let filePath = docsPath.appendingPathComponent(name)

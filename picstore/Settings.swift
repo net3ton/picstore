@@ -18,7 +18,7 @@ class AppSettings {
     var slideshowRandom: Bool = false
 
     var passType: EPasscodeType = .none
-    var passTouchID: Bool = false
+    var passTouchID: Bool = true
 
     struct ConfNames {
         static let SLIDE_DELAY = "slide-delay"

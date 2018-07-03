@@ -283,60 +283,6 @@
             </objects>
             <point key="canvasLocation" x="1988" y="130"/>
         </scene>
-        <!--View Controller-->
-        <scene sceneID="fue-yp-bUt">
-            <objects>
-                <viewController id="fym-OB-IqW" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="UCq-WW-BEI">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="80T-1N-hyN">
-                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
-                                <items>
-                                    <barButtonItem title="Item" image="delete" id="kFO-mD-VwP"/>
-                                    <barButtonItem title="Item" image="copy" id="UUn-2X-NNj"/>
-                                    <barButtonItem title="Item" image="export" id="IKi-nM-fiT"/>
-                                </items>
-                            </toolbar>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="RdZ-HX-JXT">
-                                <rect key="frame" x="0.0" y="20" width="375" height="603"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="aKa-Hf-Jn7">
-                                    <size key="itemSize" width="50" height="50"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
-                                <cells>
-                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="L5z-zY-OcW">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </view>
-                                    </collectionViewCell>
-                                </cells>
-                            </collectionView>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="80T-1N-hyN" firstAttribute="trailing" secondItem="kEF-jW-DHd" secondAttribute="trailing" id="DZd-Bc-SmX"/>
-                            <constraint firstItem="80T-1N-hyN" firstAttribute="leading" secondItem="kEF-jW-DHd" secondAttribute="leading" id="MVC-3p-YIb"/>
-                            <constraint firstItem="80T-1N-hyN" firstAttribute="bottom" secondItem="kEF-jW-DHd" secondAttribute="bottom" id="PdQ-Jg-KdN"/>
-                            <constraint firstItem="RdZ-HX-JXT" firstAttribute="top" secondItem="kEF-jW-DHd" secondAttribute="top" id="SWF-YG-SAv"/>
-                            <constraint firstItem="80T-1N-hyN" firstAttribute="top" secondItem="RdZ-HX-JXT" secondAttribute="bottom" id="mOv-1I-eWQ"/>
-                            <constraint firstItem="kEF-jW-DHd" firstAttribute="trailing" secondItem="RdZ-HX-JXT" secondAttribute="trailing" id="zIS-I1-bAp"/>
-                            <constraint firstItem="RdZ-HX-JXT" firstAttribute="leading" secondItem="kEF-jW-DHd" secondAttribute="leading" id="zRr-cU-Zwk"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="kEF-jW-DHd"/>
-                    </view>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="0m9-xi-P1a" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="302" y="887"/>
-        </scene>
         <!--Import Controller-->
         <scene sceneID="fUv-wV-jtq">
             <objects>
@@ -508,9 +454,7 @@
     <resources>
         <image name="album" width="50" height="50"/>
         <image name="album-up" width="50" height="50"/>
-        <image name="copy" width="30" height="30"/>
         <image name="delete" width="30" height="30"/>
-        <image name="export" width="30" height="30"/>
         <image name="google" width="30" height="30"/>
         <image name="itunes" width="30" height="30"/>
         <image name="new-album" width="30" height="30"/>

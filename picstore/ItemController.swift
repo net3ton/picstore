@@ -10,13 +10,15 @@ import UIKit
 import ImageSlideshow
 
 class ItemController: UIViewController {
+    private var items: [ImageObject] = []
+
     @IBOutlet weak var imageView: ImageSlideshow!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         var mas: [InputPicSource] = []
-        for item in curData.items {
+        for item in items {
             mas.append(InputPicSource(item: item))
         }
 
@@ -28,6 +30,10 @@ class ItemController: UIViewController {
         
         let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
         imageView.addGestureRecognizer(gestureRecognizer)
+    }
+
+    public func setup(items: [ImageObject]?) {
+        self.items = items ?? []
     }
 
     @objc func viewTapped() {

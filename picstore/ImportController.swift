@@ -50,17 +50,19 @@ private func is_image_data(_ data: Data) -> Bool {
 }
 
 class ImportController: UIViewController, UINavigationControllerDelegate, UIPopoverPresentationControllerDelegate {
-    public var root: MainController?
+    private var root: MainController?
+    private var album: AlbumInfo?
+
     @IBOutlet weak var separatorImport: UIView!
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         separatorImport.layer.cornerRadius = 2
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
+    //override func didReceiveMemoryWarning() {
+    //    super.didReceiveMemoryWarning()
+    //}
 
     // UIPopoverPresentationControllerDelegate
     internal func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
@@ -71,18 +73,23 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
     //    print("prepare")
     //}
 
+    public func setup(vc: MainController, album: AlbumInfo) {
+        self.root = vc
+        self.album = album
+    }
+
     private func addImageToLibrary(data: Data, name: String) {
         if !is_image_data(data) {
             print("Failed to import image! ERROR: wrong image format")
             return
         }
 
-        curData.addImage(data: data, name: name)
+        album?.addImage(data: data, name: name)
     }
-    
+
     @IBAction func photosPressed(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
-        assetsPickerDelegate.present(vc: root!)
+        assetsPickerDelegate.present(vc: root!, album: album!)
     }
 
     @IBAction func sharedFolderPressed(_ sender: UIButton) {
@@ -116,10 +123,11 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
         print(String.init(format: "added %i items", count))
 
         dismiss(animated: true, completion: nil)
-        curData.save()
+        album?.save()
         root?.refresh()
     }
-    
+
+    /*
     static public var sharedFolderFilesCount: Int {
         get {
             var count = 0
@@ -141,6 +149,7 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
             return count
         }
     }
+    */
 
     @IBAction func googlePressed(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
@@ -159,7 +168,7 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
         appGoogleDrive.onFileDownloaded = onFileDownloaded
         appGoogleDrive.showFilePicker(vc: root!)
     }
-    
+
     private func onFileDownloaded(data: Data, name: String) {
         let docsPath = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!)
         let filePath = docsPath.appendingPathComponent(name)
@@ -185,7 +194,7 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
 
         print(String.init(format: "added %i items", count))
 
-        curData.save()
+        album?.save()
         root?.refresh()
     }
 
@@ -202,7 +211,7 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
                                 fileData.append(data)
                             })
 
-                            print(item.path)
+                            //print(item.path)
                             addImageToLibrary(data: fileData, name: pathUrl.lastPathComponent)
                             count += 1
                         }
@@ -230,13 +239,15 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
             let name = textfield?.text ?? ""
             
             if !name.isEmpty {
-                if !curData.isAlbumExists(name) {
-                    curData.addAlbum(name: name)
-                    curData.save()
-                    self.root?.refresh()
-                }
-                else {
-                    print("Album with the same name is already exists!")
+                if let album = self.album {
+                    if !album.isAlbumExists(name) {
+                        album.addAlbum(name: name)
+                        album.save()
+                        self.root?.refresh()
+                    }
+                    else {
+                        print("Album with the same name is already exists!")
+                    }
                 }
             }
         })
@@ -260,9 +271,11 @@ let assetsPickerDelegate = AssetsPickerDelegate()
 
 class AssetsPickerDelegate: NSObject, NohanaImagePickerControllerDelegate {
     private var root: MainController?
+    private var album: AlbumInfo?
     
-    public func present(vc: MainController) {
+    public func present(vc: MainController, album: AlbumInfo) {
         self.root = vc
+        self.album = album
 
         let picker = NohanaImagePickerController()
         picker.delegate = self
@@ -285,13 +298,13 @@ class AssetsPickerDelegate: NSObject, NohanaImagePickerControllerDelegate {
             if item.mediaType == .image {
                 manager.requestImageData(for: item, options: options) { (imageData, dataUTI, orientation, info) in
                     if let imgData = imageData {
-                        curData.addImage(data: imgData, name: "")
+                        self.album?.addImage(data: imgData, name: "")
                     }
                 }
             }
         }
 
-        curData.save()
+        album?.save()
         root?.dismiss(animated: true, completion: nil)
         root?.refresh()
     }

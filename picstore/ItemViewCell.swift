@@ -9,6 +9,7 @@
 import UIKit
 import Photos
 
+/*
 class ItemViewCell: UICollectionViewCell {
     public static let NAME = "ItemCell"
 
@@ -30,6 +31,13 @@ class ItemViewCell: UICollectionViewCell {
         super.layoutSubviews()
         imageView.frame = self.bounds
     }
+}
+*/
+
+class ImageViewCell: UICollectionViewCell {
+    public static let NAME = "ImageCell"
+    
+    @IBOutlet weak var imageView: UIImageView!
 }
 
 

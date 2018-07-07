@@ -14,7 +14,8 @@
 		211DBBBB20E82776006E2213 /* Launch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 211DBBBA20E82776006E2213 /* Launch.storyboard */; };
 		216044AA2077675100A24A79 /* ImportController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216044A92077675100A24A79 /* ImportController.swift */; };
 		216D8B00208915B00066F97F /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D8AFF208915B00066F97F /* Settings.swift */; };
-		2178E1932076C2A0000E82C2 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2178E1922076C2A0000E82C2 /* MainController.swift */; };
+		2174F7FC20EEAAF800B970B8 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2174F7FB20EEAAF800B970B8 /* MainController.swift */; };
+		2174F7FE20F0AC0C00B970B8 /* AlbumController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2174F7FD20F0AC0C00B970B8 /* AlbumController.swift */; };
 		2178E1952076CC81000E82C2 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2178E1942076CC81000E82C2 /* SettingsController.swift */; };
 		2199212520DBF35D00CE1355 /* Main.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2199212320DBF35D00CE1355 /* Main.xcdatamodeld */; };
 		21AD53D620766BE700BC8705 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21AD53D520766BE700BC8705 /* AppDelegate.swift */; };
@@ -34,7 +35,8 @@
 		211DBBBA20E82776006E2213 /* Launch.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Launch.storyboard; sourceTree = "<group>"; };
 		216044A92077675100A24A79 /* ImportController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportController.swift; sourceTree = "<group>"; };
 		216D8AFF208915B00066F97F /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
-		2178E1922076C2A0000E82C2 /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
+		2174F7FB20EEAAF800B970B8 /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
+		2174F7FD20F0AC0C00B970B8 /* AlbumController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlbumController.swift; sourceTree = "<group>"; };
 		2178E1942076CC81000E82C2 /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		2199212420DBF35D00CE1355 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		21AD53D220766BE700BC8705 /* picstore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = picstore.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,10 +84,11 @@
 			isa = PBXGroup;
 			children = (
 				21AD53D520766BE700BC8705 /* AppDelegate.swift */,
-				2178E1922076C2A0000E82C2 /* MainController.swift */,
+				2174F7FB20EEAAF800B970B8 /* MainController.swift */,
 				211DBBB620E4F02C006E2213 /* ItemController.swift */,
 				21C556A02077D32200D5703A /* ItemViewCell.swift */,
 				2178E1942076CC81000E82C2 /* SettingsController.swift */,
+				2174F7FD20F0AC0C00B970B8 /* AlbumController.swift */,
 				216044A92077675100A24A79 /* ImportController.swift */,
 				21130CA220EADBB800097C26 /* LockController.swift */,
 				21AD53D920766BE700BC8705 /* Main.storyboard */,
@@ -266,13 +269,14 @@
 				21130CA320EADBB800097C26 /* LockController.swift in Sources */,
 				21C556A12077D32200D5703A /* ItemViewCell.swift in Sources */,
 				2178E1952076CC81000E82C2 /* SettingsController.swift in Sources */,
-				2178E1932076C2A0000E82C2 /* MainController.swift in Sources */,
 				216044AA2077675100A24A79 /* ImportController.swift in Sources */,
+				2174F7FC20EEAAF800B970B8 /* MainController.swift in Sources */,
 				211DBBB520E3F0B2006E2213 /* Data.swift in Sources */,
 				211DBBB720E4F02C006E2213 /* ItemController.swift in Sources */,
 				21AD53D620766BE700BC8705 /* AppDelegate.swift in Sources */,
 				21DA8DE420814BC3003F22D8 /* IconButton.swift in Sources */,
 				211DBBB920E65822006E2213 /* GoogleDrive.swift in Sources */,
+				2174F7FE20F0AC0C00B970B8 /* AlbumController.swift in Sources */,
 				216D8B00208915B00066F97F /* Settings.swift in Sources */,
 				2199212520DBF35D00CE1355 /* Main.xcdatamodeld in Sources */,
 			);
@@ -415,7 +419,10 @@
 				DEVELOPMENT_TEAM = 5324A38GMP;
 				INFOPLIST_FILE = picstore/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oskharkov.picstore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -432,7 +439,10 @@
 				DEVELOPMENT_TEAM = 5324A38GMP;
 				INFOPLIST_FILE = picstore/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oskharkov.picstore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

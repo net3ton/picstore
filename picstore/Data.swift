@@ -157,18 +157,34 @@ class AlbumInfo {
         appData.save()
     }
 
-    public func select(ind: Int) {
-        if !selected.contains(ind) {
-            selected.append(ind)
+    public func select(index: Int) {
+        if let pos = selected.index(of: index) {
+            selected.remove(at: pos)
+        }
+        else {
+            selected.append(index)
         }
     }
 
-    public func isSelected(ind: Int) -> Bool {
-        return selected.contains(ind)
+    public func isSelected(index: Int) -> Bool {
+        return selected.contains(index)
     }
 
     public func clearSelection() {
         selected.removeAll()
+    }
+
+    public func deleteSelected() {
+        let context = appData.getContext()
+
+        for ind in selected {
+            if let album = getAlbum(index: ind) {
+                context.delete(album)
+            }
+            else if let item = getItem(index: ind) {
+                context.delete(item)
+            }
+        }
     }
 }
 
@@ -233,174 +249,3 @@ class AppData {
         return AlbumInfo(parent: album, items: items, albums: albums)
     }
 }
-
-/*
-let curData = CurrentData()
-
-class CurrentData {
-    private(set) var current: AlbumObject?
-    private(set) var items: [ImageObject] = []
-    private(set) var albums: [AlbumObject] = []
-    private var selection: [Int] = []
-
-    private var container: NSPersistentContainer
-
-    public init() {
-        container = NSPersistentContainer(name: "Main")
-        container.loadPersistentStores() { (storeDescription, error) in
-            if let error = error as NSError? {
-                fatalError("Core Data init ERROR: \(error.localizedDescription), \(error.userInfo)")
-            }
-        }
-
-        open()
-    }
-
-    private func getContext() -> NSManagedObjectContext {
-        return container.viewContext
-    }
-
-    public func save() {
-        let context = getContext()
-        if context.hasChanges {
-            do {
-                try context.save()
-            }
-            catch let error {
-                fatalError("Core Data save ERROR \(error.localizedDescription)")
-            }
-        }
-    }
-
-    public func openParentAlbum() {
-        if current != nil {
-            open(album: current?.parent)
-        }
-    }
-
-    public func open(album: AlbumObject? = nil) {
-        current = album
-
-        let albumsRequest = NSFetchRequest<AlbumObject>(entityName: "Album")
-        let imagesRequest = NSFetchRequest<ImageObject>(entityName: "Image")
-
-        do {
-            var predicate: NSPredicate?
-            
-            if current == nil {
-                predicate = NSPredicate(format: "parent = nil")
-            }
-            else {
-                predicate = NSPredicate(format: "parent = %@", current!)
-            }
-
-            albumsRequest.predicate = predicate
-            albums = try container.viewContext.fetch(albumsRequest)
-
-            imagesRequest.predicate = predicate
-            items = try container.viewContext.fetch(imagesRequest)
-        }
-        catch let error {
-            print("Failed to fetch spend record! ERROR: " + error.localizedDescription)
-        }
-        
-        print("opened")
-    }
-
-    public func isRootAlbum() -> Bool {
-        return current == nil
-    }
-    
-    public func getCurrentAlbumName() -> String {
-        if current == nil {
-            return "Main"
-        }
-
-        return current?.name ?? ""
-    }
-    
-    public func getItemsCount() -> Int {
-        return albums.count + items.count + (isRootAlbum() ? 0 : 1)
-    }
-
-    public func getAlbum(index: Int) -> AlbumObject? {
-        var ind = index
-
-        if !isRootAlbum() {
-            if ind == 0 {
-                return nil
-            }
-
-            ind -= 1
-        }
-
-        if ind < 0 || ind >= albums.count {
-            return nil
-        }
-
-        return albums[ind]
-    }
-
-    public func getItem(index: Int) -> ImageObject? {
-        var ind = index
-
-        if !isRootAlbum() {
-            if ind == 0 {
-                return nil
-            }
-
-            ind -= 1
-        }
-
-        ind -= albums.count
-
-        if ind < 0 || ind >= items.count {
-            return nil
-        }
-
-        return items[ind]
-    }
-
-    public func addImage(data: Data, name: String) {
-        let itemEntity = NSEntityDescription.entity(forEntityName: "Image", in: container.viewContext)
-
-        let item = ImageObject(entity: itemEntity!, insertInto: container.viewContext)
-        item.name = name
-        item.date = Date()
-        item.rating = 0
-        item.views = 0
-
-        item.data = data
-        item.thumb = nil
-        item.parent = current
-
-        items.append(item)
-    }
-
-    public func addAlbum(name: String) {
-        if isAlbumExists(name) {
-            print("Album with this name is already exists!")
-            return
-        }
-
-        let albumEntity = NSEntityDescription.entity(forEntityName: "Album", in: container.viewContext)
-        
-        let album = AlbumObject(entity: albumEntity!, insertInto: container.viewContext)
-        album.name = name
-        album.date = Date()
-        album.parent = current
-
-        albums.append(album)
-    }
-
-    public func isAlbumExists(_ name: String) -> Bool {
-        for album in albums {
-            if album.name == name {
-                return true
-            }
-        }
-
-        return false
-    }
-}
-*/

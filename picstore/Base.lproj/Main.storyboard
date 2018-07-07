@@ -304,16 +304,26 @@
                                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Gvh-tR-1iy">
                                                     <rect key="frame" x="0.0" y="0.0" width="100" height="100"/>
                                                 </imageView>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="item-selected" translatesAutoresizingMaskIntoConstraints="NO" id="OHg-gR-Fzf">
+                                                    <rect key="frame" x="60" y="8" width="32" height="32"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="32" id="7co-vv-C8R"/>
+                                                        <constraint firstAttribute="height" constant="32" id="moH-BB-2MV"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                         </view>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="Gvh-tR-1iy" secondAttribute="trailing" id="9OT-3q-SNc"/>
                                             <constraint firstAttribute="bottom" secondItem="Gvh-tR-1iy" secondAttribute="bottom" id="E7x-ce-PIg"/>
                                             <constraint firstItem="Gvh-tR-1iy" firstAttribute="top" secondItem="e6F-Xc-zHB" secondAttribute="top" id="OBT-UI-kiw"/>
+                                            <constraint firstItem="OHg-gR-Fzf" firstAttribute="top" secondItem="e6F-Xc-zHB" secondAttribute="top" constant="8" id="hcQ-cQ-Z5q"/>
+                                            <constraint firstAttribute="trailing" secondItem="OHg-gR-Fzf" secondAttribute="trailing" constant="8" id="qb4-AK-vkK"/>
                                             <constraint firstItem="Gvh-tR-1iy" firstAttribute="leading" secondItem="e6F-Xc-zHB" secondAttribute="leading" id="wKh-iC-XXC"/>
                                         </constraints>
                                         <size key="customSize" width="100" height="100"/>
                                         <connections>
+                                            <outlet property="imageSelection" destination="OHg-gR-Fzf" id="u8g-qN-Xgx"/>
                                             <outlet property="imageView" destination="Gvh-tR-1iy" id="usg-tn-x6z"/>
                                         </connections>
                                     </collectionViewCell>
@@ -336,18 +346,28 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="item-selected" translatesAutoresizingMaskIntoConstraints="NO" id="zld-lt-gV3">
+                                                    <rect key="frame" x="60" y="8" width="32" height="32"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="32" id="TNJ-Zv-2xE"/>
+                                                        <constraint firstAttribute="width" constant="32" id="xBg-zU-76K"/>
+                                                    </constraints>
+                                                </imageView>
                                             </subviews>
                                         </view>
                                         <constraints>
                                             <constraint firstAttribute="trailingMargin" secondItem="6S3-cm-cgC" secondAttribute="trailing" id="43f-Go-4xk"/>
+                                            <constraint firstItem="zld-lt-gV3" firstAttribute="top" secondItem="ivR-Y4-Iog" secondAttribute="top" constant="8" id="5lC-X2-MU9"/>
                                             <constraint firstItem="6S3-cm-cgC" firstAttribute="leading" secondItem="ivR-Y4-Iog" secondAttribute="leadingMargin" id="ZKa-BU-Jm1"/>
                                             <constraint firstItem="gRw-ro-X64" firstAttribute="top" secondItem="ivR-Y4-Iog" secondAttribute="topMargin" id="jZZ-y4-JSP"/>
                                             <constraint firstItem="6S3-cm-cgC" firstAttribute="bottom" secondItem="ivR-Y4-Iog" secondAttribute="bottomMargin" id="nB6-cg-zVh"/>
                                             <constraint firstAttribute="trailingMargin" secondItem="gRw-ro-X64" secondAttribute="trailing" constant="10" id="nif-ef-wkA"/>
+                                            <constraint firstAttribute="trailing" secondItem="zld-lt-gV3" secondAttribute="trailing" constant="8" id="xfn-vw-umV"/>
                                             <constraint firstItem="gRw-ro-X64" firstAttribute="leading" secondItem="ivR-Y4-Iog" secondAttribute="leadingMargin" constant="10" id="zif-pP-nDy"/>
                                         </constraints>
                                         <size key="customSize" width="100" height="100"/>
                                         <connections>
+                                            <outlet property="imageSelection" destination="zld-lt-gV3" id="IkQ-Zs-FbG"/>
                                             <outlet property="nameLabel" destination="6S3-cm-cgC" id="DjP-Ys-SRT"/>
                                         </connections>
                                     </collectionViewCell>
@@ -577,6 +597,7 @@
         <image name="album-up" width="50" height="50"/>
         <image name="delete" width="30" height="30"/>
         <image name="google" width="30" height="30"/>
+        <image name="item-selected" width="24" height="24"/>
         <image name="itunes" width="30" height="30"/>
         <image name="new-album" width="30" height="30"/>
         <image name="photos" width="30" height="30"/>

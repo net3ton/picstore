@@ -25,9 +25,11 @@ class MainController: UIViewController {
             album = appData.open()
         }
 
-        itemsDelegate.openAlbum = openAlbum
-        itemsDelegate.openItem = openItem
         itemsDelegate.albumData = album
+        itemsDelegate.isEditMode = { return self.editMode }
+        itemsDelegate.onOpenAlbum = openAlbum
+        itemsDelegate.onOpenItem = openItem
+        itemsDelegate.onSelectItem = selectItem
 
         itemsView.delegate = itemsDelegate
         itemsView.dataSource = itemsDelegate
@@ -35,6 +37,19 @@ class MainController: UIViewController {
         navigationItem.title = album!.getName()
         //navigationItem.backBarButtonItem = UIBarButtonItem(title: "Albums", style: .plain, target: nil, action: nil)
         navigationItem.setHidesBackButton(true, animated: false)
+
+        let btnDelete = UIBarButtonItem(image: UIImage(named: "delete"), style: .plain, target: self, action: nil)
+        let btnCopy = UIBarButtonItem(image: UIImage(named: "copy"), style: .plain, target: self, action: nil)
+        let btnExport = UIBarButtonItem(image: UIImage(named: "export"), style: .plain, target: self, action: nil)
+        //let btnAlbumInfo = UIBarButtonItem(image: UIImage(named: "info"), style: .plain, target: self, action: nil)
+        
+        let sep1 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let sep2 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        //let sep3 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        self.toolbarItems = [btnDelete, sep1, btnCopy, sep2, btnExport]
+        
+        let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(onEdit))
+        itemsView.addGestureRecognizer(longGesture)
 
         updateNavigation()
     }
@@ -45,7 +60,6 @@ class MainController: UIViewController {
 
     private func updateNavigation() {
         if editMode {
-            //let btnBack = UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: self, action: #selector(onBack))
             let btnEditDone = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(onEditDone))
             navigationItem.setRightBarButtonItems([btnEditDone], animated: true)
             navigationItem.setLeftBarButtonItems([], animated: true)
@@ -57,13 +71,12 @@ class MainController: UIViewController {
             }
             else {
                 let btnBack = UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: self, action: #selector(onBack))
-                let btnAlbumInfo = UIBarButtonItem(image: UIImage(named: "info"), style: .plain, target: self, action: #selector(onAlbumInfo))
                 navigationItem.setLeftBarButtonItems([btnBack], animated: true)
             }
 
             let btnAdd = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(onAddItem))
-            let btnEdit = UIBarButtonItem(image: UIImage(named: "props"), style: .plain, target: self, action: #selector(onEdit))
-            navigationItem.setRightBarButtonItems([btnEdit], animated: true)
+            //let btnEdit = UIBarButtonItem(image: UIImage(named: "props"), style: .plain, target: self, action: #selector(onEdit))
+            navigationItem.setRightBarButtonItems([btnAdd], animated: true)
         }
     }
 
@@ -85,26 +98,30 @@ class MainController: UIViewController {
         present(view, animated: true)
     }
 
-    @objc func onEdit() {
-        editMode = true
-        navigationController?.setToolbarHidden(false, animated: true)
+    @objc func onEdit(_ sender: UILongPressGestureRecognizer) {
+        if sender.state == .began {
+            setEditMode(on: true)
 
-        let btnDelete = UIBarButtonItem(image: UIImage(named: "delete"), style: .plain, target: self, action: nil)
-        let btnCopy = UIBarButtonItem(image: UIImage(named: "copy"), style: .plain, target: self, action: nil)
-        let btnExport = UIBarButtonItem(image: UIImage(named: "export"), style: .plain, target: self, action: nil)
-
-        let sep1 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let sep2 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        self.toolbarItems = [btnDelete, sep1, btnCopy, sep2, btnExport]
-
-        updateNavigation()
+            if let indexPath = itemsView.indexPathForItem(at: sender.location(in: itemsView)) {
+                selectItem(index: indexPath)
+            }
+        }
     }
 
     @objc func onEditDone() {
-        editMode = false
-        navigationController?.setToolbarHidden(true, animated: true)
+        setEditMode(on: false)
 
-        updateNavigation()
+        album?.clearSelection()
+        refresh()
+    }
+
+    private func setEditMode(on: Bool) {
+        if editMode != on {
+            editMode = on
+
+            navigationController?.setToolbarHidden(!on, animated: true)
+            updateNavigation()
+        }
     }
 
     @objc func onBack() {
@@ -123,9 +140,6 @@ class MainController: UIViewController {
 
         view.album = appData.open(album: album)
         navigationController?.pushViewController(view, animated: true)
-
-        //curData.open(album: album)
-        //refresh()
     }
 
     private func openItem(item: ImageObject?) {
@@ -136,6 +150,11 @@ class MainController: UIViewController {
         navigationController?.pushViewController(view, animated: true)
     }
 
+    private func selectItem(index: IndexPath) {
+        album?.select(index: index.row)
+        itemsView.reloadItems(at: [index])
+    }
+    
     //override func didReceiveMemoryWarning() {
     //    super.didReceiveMemoryWarning()
     //}
@@ -144,8 +163,15 @@ class MainController: UIViewController {
 
 class ItemsDelegate: NSObject, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     public var albumData: AlbumInfo?
-    public var openAlbum: ((AlbumObject?) -> Void)?
-    public var openItem: ((ImageObject?) -> Void)?
+    public var isEditMode: (() -> Bool)!
+
+    public var onOpenAlbum: ((AlbumObject?) -> Void)?
+    public var onOpenItem: ((ImageObject?) -> Void)?
+    public var onSelectItem: ((IndexPath) -> Void)?
+
+    private func isSelected(_ indexPath: IndexPath) -> Bool {
+        return albumData?.isSelected(index: indexPath.row) ?? false
+    }
 
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -158,16 +184,18 @@ class ItemsDelegate: NSObject, UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if let album = albumData?.getAlbum(index: indexPath.row) {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumViewCell.NAME, for: indexPath) as! AlbumViewCell
+            cell.setSelected(on: isSelected(indexPath))
             cell.nameLabel.text = album.name
             return cell
         }
 
         if let item = albumData?.getItem(index: indexPath.row) {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageViewCell.NAME, for: indexPath) as! ImageViewCell
+            cell.setSelected(on: isSelected(indexPath))
             cell.imageView.image = item.icon
             return cell
         }
-        
+
         return collectionView.dequeueReusableCell(withReuseIdentifier: ParentViewCell.NAME, for: indexPath)
     }
 
@@ -185,18 +213,18 @@ class ItemsDelegate: NSObject, UICollectionViewDelegate, UICollectionViewDataSou
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        //if editMode {
-        //curData.select(indexPath.row)
-        //return
-        //}
+        if isEditMode() {
+            onSelectItem?(indexPath)
+            return
+        }
 
         if let album = albumData?.getAlbum(index: indexPath.row) {
-            openAlbum?(album)
+            onOpenAlbum?(album)
             return
         }
 
         if let item = albumData?.getItem(index: indexPath.row) {
-            openItem?(item)
+            onOpenItem?(item)
             return
         }
     }

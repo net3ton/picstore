@@ -2,55 +2,95 @@
 //  ItemController.swift
 //  picstore
 //
-//  Created by Aleksandr Kharkov on 28/06/2018.
+//  Created by Aleksandr Kharkov on 07/07/2018.
 //  Copyright © 2018 Oleksandr Kharkov. All rights reserved.
 //
 
 import UIKit
-import ImageSlideshow
 
 class ItemController: UIViewController {
-    private var items: [ImageObject] = []
+    @IBOutlet weak var itemSlider: ImageSlider!
 
-    @IBOutlet weak var imageView: ImageSlideshow!
+    private var fullscreen = false
+    private var items: [ImageObject] = []
+    private var startPage = 0
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        var mas: [InputPicSource] = []
-        for item in items {
-            mas.append(InputPicSource(item: item))
+        itemSlider.pagesCount = self.items.count
+        itemSlider.pageCurrent = startPage
+        itemSlider.imageForPage = getImageFor
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onViewTap))
+        itemSlider.addGestureRecognizer(tapGesture)
+
+        initToolbar()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        navigationController?.setToolbarHidden(true, animated: true)
+    }
+    
+    public func setup(items: [ImageObject], start: Int) {
+        self.items = items
+        self.startPage = start
+    }
+
+    //override func didReceiveMemoryWarning() {
+    //    super.didReceiveMemoryWarning()
+    //}
+
+    private func getImageFor(page: Int) -> UIImage? {
+        print("getting image for page: ", page)
+        return self.items[page].image
+    }
+
+    @objc func onViewTap(_ sender: UITapGestureRecognizer) {
+        if sender.state == .recognized {
+            fullscreen = !fullscreen
+            toggleFullscreen()
         }
-
-        imageView.preload = .fixed(offset: 1)
-        imageView.pageControlPosition = .hidden
-        imageView.backgroundColor = UIColor.black
-        imageView.setImageInputs(mas)
-        //imageView.setCurrentPage(4, animated: false)
-        
-        let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
-        imageView.addGestureRecognizer(gestureRecognizer)
     }
 
-    public func setup(items: [ImageObject]?) {
-        self.items = items ?? []
+    private func toggleFullscreen() {
+        navigationController?.setToolbarHidden(fullscreen, animated: true)
+        navigationController?.setNavigationBarHidden(fullscreen, animated: true)
+
+        UIView.animate(withDuration: 0.3) {
+            self.itemSlider.backgroundColor = self.fullscreen ? UIColor.black : UIColor.white
+        }
     }
 
-    @objc func viewTapped() {
-        imageView.presentFullScreenController(from: self)
-    }
-}
-
-
-class InputPicSource: NSObject, InputSource {
-    private var item: ImageObject
-
-    init(item: ImageObject) {
-        self.item = item
+    override open var prefersStatusBarHidden: Bool {
+        return fullscreen
     }
 
-    func load(to imageView: UIImageView, with callback: @escaping (UIImage?) -> Void) {
-        imageView.image = item.image
-        callback(imageView.image)
+    private func initToolbar() {
+        let btnDelete = UIBarButtonItem(image: UIImage(named: "delete"), style: .plain, target: self, action: #selector(onDelete))
+        let btnCopy = UIBarButtonItem(image: UIImage(named: "copy"), style: .plain, target: self, action: #selector(onCopy))
+        let btnExport = UIBarButtonItem(image: UIImage(named: "export"), style: .plain, target: self, action: #selector(onExport))
+        let btnInfo = UIBarButtonItem(image: UIImage(named: "info"), style: .plain, target: self, action: #selector(onInfo))
+
+        let sep1 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let sep2 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let sep3 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        self.toolbarItems = [btnDelete, sep1, btnCopy, sep2, btnInfo, sep3, btnExport]
+
+        navigationController?.setToolbarHidden(false, animated: true)
+    }
+
+    @objc func onDelete() {
+    }
+
+    @objc func onCopy() {
+    }
+
+    @objc func onExport() {
+    }
+
+    @objc func onInfo() {
     }
 }

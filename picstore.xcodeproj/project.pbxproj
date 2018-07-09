@@ -9,9 +9,10 @@
 /* Begin PBXBuildFile section */
 		21130CA320EADBB800097C26 /* LockController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21130CA220EADBB800097C26 /* LockController.swift */; };
 		211DBBB520E3F0B2006E2213 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211DBBB420E3F0B2006E2213 /* Data.swift */; };
-		211DBBB720E4F02C006E2213 /* ItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211DBBB620E4F02C006E2213 /* ItemController.swift */; };
 		211DBBB920E65822006E2213 /* GoogleDrive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211DBBB820E65822006E2213 /* GoogleDrive.swift */; };
 		211DBBBB20E82776006E2213 /* Launch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 211DBBBA20E82776006E2213 /* Launch.storyboard */; };
+		211FBD1620F14BD20014E89D /* ItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211FBD1520F14BD20014E89D /* ItemController.swift */; };
+		211FBD1820F1F4410014E89D /* ImageSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211FBD1720F1F4410014E89D /* ImageSlider.swift */; };
 		216044AA2077675100A24A79 /* ImportController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216044A92077675100A24A79 /* ImportController.swift */; };
 		216D8B00208915B00066F97F /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D8AFF208915B00066F97F /* Settings.swift */; };
 		2174F7FC20EEAAF800B970B8 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2174F7FB20EEAAF800B970B8 /* MainController.swift */; };
@@ -30,9 +31,10 @@
 		0E97ADD3A9629732C066A74D /* Pods-picstore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-picstore.release.xcconfig"; path = "Pods/Target Support Files/Pods-picstore/Pods-picstore.release.xcconfig"; sourceTree = "<group>"; };
 		21130CA220EADBB800097C26 /* LockController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockController.swift; sourceTree = "<group>"; };
 		211DBBB420E3F0B2006E2213 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
-		211DBBB620E4F02C006E2213 /* ItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemController.swift; sourceTree = "<group>"; };
 		211DBBB820E65822006E2213 /* GoogleDrive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleDrive.swift; sourceTree = "<group>"; };
 		211DBBBA20E82776006E2213 /* Launch.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Launch.storyboard; sourceTree = "<group>"; };
+		211FBD1520F14BD20014E89D /* ItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemController.swift; sourceTree = "<group>"; };
+		211FBD1720F1F4410014E89D /* ImageSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSlider.swift; sourceTree = "<group>"; };
 		216044A92077675100A24A79 /* ImportController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportController.swift; sourceTree = "<group>"; };
 		216D8AFF208915B00066F97F /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		2174F7FB20EEAAF800B970B8 /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
@@ -85,7 +87,7 @@
 			children = (
 				21AD53D520766BE700BC8705 /* AppDelegate.swift */,
 				2174F7FB20EEAAF800B970B8 /* MainController.swift */,
-				211DBBB620E4F02C006E2213 /* ItemController.swift */,
+				211FBD1520F14BD20014E89D /* ItemController.swift */,
 				21C556A02077D32200D5703A /* ItemViewCell.swift */,
 				2178E1942076CC81000E82C2 /* SettingsController.swift */,
 				2174F7FD20F0AC0C00B970B8 /* AlbumController.swift */,
@@ -98,6 +100,7 @@
 				21DA8DE320814BC3003F22D8 /* IconButton.swift */,
 				211DBBB420E3F0B2006E2213 /* Data.swift */,
 				216D8AFF208915B00066F97F /* Settings.swift */,
+				211FBD1720F1F4410014E89D /* ImageSlider.swift */,
 				211DBBB820E65822006E2213 /* GoogleDrive.swift */,
 				21AD53E120766BE900BC8705 /* Info.plist */,
 			);
@@ -266,13 +269,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				211FBD1620F14BD20014E89D /* ItemController.swift in Sources */,
 				21130CA320EADBB800097C26 /* LockController.swift in Sources */,
 				21C556A12077D32200D5703A /* ItemViewCell.swift in Sources */,
 				2178E1952076CC81000E82C2 /* SettingsController.swift in Sources */,
+				211FBD1820F1F4410014E89D /* ImageSlider.swift in Sources */,
 				216044AA2077675100A24A79 /* ImportController.swift in Sources */,
 				2174F7FC20EEAAF800B970B8 /* MainController.swift in Sources */,
 				211DBBB520E3F0B2006E2213 /* Data.swift in Sources */,
-				211DBBB720E4F02C006E2213 /* ItemController.swift in Sources */,
 				21AD53D620766BE700BC8705 /* AppDelegate.swift in Sources */,
 				21DA8DE420814BC3003F22D8 /* IconButton.swift in Sources */,
 				211DBBB920E65822006E2213 /* GoogleDrive.swift in Sources */,

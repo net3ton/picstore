@@ -91,20 +91,26 @@ class AlbumInfo {
         return albums.count + items.count
     }
 
-    public func getAlbum(index: Int) -> AlbumObject? {
-        if index >= 0 && index < albums.count {
-            return albums[index]
-        }
+    public func getAlbumIndex(_ index: Int) -> Int? {
+        return (index >= 0 && index < albums.count) ? index : nil
+    }
 
+    public func getItemIndex(_ index: Int) -> Int? {
+        let ind = index - albums.count
+        return (ind >= 0 && ind < items.count) ? ind : nil
+    }
+
+    public func getAlbum(index: Int) -> AlbumObject? {
+        if let ind = getAlbumIndex(index) {
+            return albums[ind]
+        }
         return nil
     }
 
     public func getItem(index: Int) -> ImageObject? {
-        let ind = index - albums.count
-        if ind >= 0 && ind < items.count {
+        if let ind = getItemIndex(index) {
             return items[ind]
         }
-
         return nil
     }
 
@@ -119,20 +125,7 @@ class AlbumInfo {
     }
 
     public func addImage(data: Data, name: String) {
-        let context = appData.getContext()
-        let itemEntity = NSEntityDescription.entity(forEntityName: "Image", in: context)
-        let item = ImageObject(entity: itemEntity!, insertInto: context)
-
-        item.name = name
-        item.date = Date()
-        item.rating = 0
-        item.views = 0
-        item.pos = Int32(items.count)
-
-        item.data = data
-        item.thumb = nil
-        item.parent = parent
-
+        let item = appData.addImage(name, data: data, pos: items.count, parent: parent)
         items.append(item)
     }
 
@@ -142,14 +135,7 @@ class AlbumInfo {
             return
         }
 
-        let context = appData.getContext()
-        let albumEntity = NSEntityDescription.entity(forEntityName: "Album", in: context)
-        let album = AlbumObject(entity: albumEntity!, insertInto: context)
-
-        album.name = name
-        album.date = Date()
-        album.parent = parent
-
+        let album = appData.addAlbum(name, parent: parent)
         albums.append(album)
     }
 
@@ -170,21 +156,49 @@ class AlbumInfo {
         return selected.contains(index)
     }
 
+    public func isAnySelected() -> Bool {
+        return !selected.isEmpty
+    }
+
     public func clearSelection() {
         selected.removeAll()
     }
 
     public func deleteSelected() {
-        let context = appData.getContext()
+        if !isAnySelected() {
+            return
+        }
+
+        var itemsToDelete: [ImageObject] = []
+        var albumsToDelete: [AlbumObject] = []
 
         for ind in selected {
             if let album = getAlbum(index: ind) {
-                context.delete(album)
+                albumsToDelete.append(album)
             }
             else if let item = getItem(index: ind) {
-                context.delete(item)
+                itemsToDelete.append(item)
             }
         }
+
+        for item in itemsToDelete {
+            if let ind = self.items.index(of: item) {
+                self.items.remove(at: ind)
+            }
+
+            appData.delete(item)
+        }
+
+        for album in albumsToDelete {
+            if let ind = self.albums.index(of: album) {
+                self.albums.remove(at: ind)
+            }
+
+            appData.delete(album)
+        }
+
+        clearSelection()
+        save()
     }
 }
 
@@ -203,7 +217,7 @@ class AppData {
         }
     }
 
-    public func getContext() -> NSManagedObjectContext {
+    private func getContext() -> NSManagedObjectContext {
         return container.viewContext
     }
     
@@ -222,6 +236,7 @@ class AppData {
     public func open(album: AlbumObject? = nil) -> AlbumInfo {
         let albumsRequest = NSFetchRequest<AlbumObject>(entityName: "Album")
         let imagesRequest = NSFetchRequest<ImageObject>(entityName: "Image")
+        let context = getContext()
 
         var albums: [AlbumObject] = []
         var items: [ImageObject] = []
@@ -237,15 +252,49 @@ class AppData {
             }
             
             albumsRequest.predicate = predicate
-            albums = try container.viewContext.fetch(albumsRequest)
+            albums = try context.fetch(albumsRequest)
 
             imagesRequest.predicate = predicate
-            items = try container.viewContext.fetch(imagesRequest)
+            items = try context.fetch(imagesRequest)
         }
         catch let error {
             print("Failed to fetch spend record! ERROR: " + error.localizedDescription)
         }
 
         return AlbumInfo(parent: album, items: items, albums: albums)
+    }
+
+    public func addAlbum(_ name: String, parent: AlbumObject?) -> AlbumObject {
+        let context = getContext()
+        let albumEntity = NSEntityDescription.entity(forEntityName: "Album", in: context)
+        let album = AlbumObject(entity: albumEntity!, insertInto: context)
+        
+        album.name = name
+        album.date = Date()
+        album.parent = parent
+
+        return album
+    }
+
+    public func addImage(_ name: String, data: Data, pos: Int, parent: AlbumObject?) -> ImageObject {
+        let context = getContext()
+        let itemEntity = NSEntityDescription.entity(forEntityName: "Image", in: context)
+        let item = ImageObject(entity: itemEntity!, insertInto: context)
+
+        item.name = name
+        item.date = Date()
+        item.rating = 0
+        item.views = 0
+        item.pos = Int32(pos)
+
+        item.data = data
+        item.thumb = nil
+        item.parent = parent
+
+        return item
+    }
+
+    public func delete(_ object: NSManagedObject) {
+        getContext().delete(object)
     }
 }

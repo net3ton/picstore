@@ -25,15 +25,30 @@ class MainController: UIViewController {
             album = appData.open()
         }
 
-        navigationItem.title = album!.getName()
-        //navigationItem.backBarButtonItem = UIBarButtonItem(title: "Albums", style: .plain, target: nil, action: nil)
-        navigationItem.setHidesBackButton(true, animated: false)
-
+        initTitlebar()
         initItemsView()
         initToolbar()
         updateNavigation()
     }
 
+    private func initTitlebar() {
+        let titlebar = Titlebar()
+        titlebar.onTapHandler = album!.isRoot() ? nil : onTitleTap
+        titlebar.caption = album!.getName()
+        titlebar.count = album!.items.count
+
+        navigationItem.titleView = titlebar
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
+        navigationItem.setHidesBackButton(true, animated: false)
+    }
+
+    @objc func onTitleTap() {
+        let sboard = UIStoryboard(name: "Main", bundle: nil) as UIStoryboard
+        let view = sboard.instantiateViewController(withIdentifier: "settings-album") as! AlbumController
+        
+        navigationController?.pushViewController(view, animated: true)
+    }
+    
     private func initItemsView() {
         itemsDelegate.albumData = album
         itemsDelegate.isEditMode = { return self.editMode }

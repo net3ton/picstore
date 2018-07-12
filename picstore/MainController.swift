@@ -11,7 +11,7 @@ import UIKit
 class MainController: UIViewController {
     @IBOutlet weak var itemsView: UICollectionView!
 
-    public var album: AlbumInfo?
+    public var album: AlbumInfo!
     private var editMode: Bool = false
     private var itemsDelegate = ItemsDelegate()
     private var titlebar = Titlebar()
@@ -33,9 +33,9 @@ class MainController: UIViewController {
     }
 
     private func initTitlebar() {
-        titlebar.onTapHandler = album!.isRoot() ? nil : onTitleTap
-        titlebar.caption = album!.getName()
-        titlebar.count = album!.items.count
+        titlebar.onTapHandler = album.isRoot() ? nil : onTitleTap
+        titlebar.caption = album.getName()
+        titlebar.count = album.items.count
 
         navigationItem.titleView = titlebar
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "Back", style: .plain, target: nil, action: nil)
@@ -82,7 +82,7 @@ class MainController: UIViewController {
 
     public func refresh() {
         itemsView.reloadData()
-        titlebar.count = album!.items.count
+        titlebar.count = album.items.count
     }
 
     private func updateNavigation() {
@@ -92,7 +92,7 @@ class MainController: UIViewController {
             navigationItem.setLeftBarButtonItems([], animated: true)
         }
         else {
-            if album!.isRoot() {
+            if album.isRoot() {
                 let btnSettings = UIBarButtonItem(image: UIImage(named: "settings"), style: .plain, target: self, action: #selector(onSettings))
                 navigationItem.setLeftBarButtonItems([btnSettings], animated: true)
             }
@@ -117,7 +117,7 @@ class MainController: UIViewController {
         let sboard = UIStoryboard(name: "Main", bundle: nil) as UIStoryboard
         let view = sboard.instantiateViewController(withIdentifier: "import-view") as! ImportController
 
-        view.setup(vc: self, album: album!)
+        view.setup(vc: self, album: album)
         view.modalPresentationStyle = .popover
         view.popoverPresentationController?.delegate = view
         view.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
@@ -139,7 +139,7 @@ class MainController: UIViewController {
     @objc func onEditDone() {
         setEditMode(false)
 
-        album?.clearSelection()
+        album.clearSelection()
         refresh()
     }
 
@@ -166,7 +166,7 @@ class MainController: UIViewController {
         let removeController = UIAlertController(title: nil, message: "Delete items? It can't be undone", preferredStyle: .actionSheet);
         
         removeController.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { (action) in
-            self.album?.deleteSelected()
+            self.album.deleteSelected()
             self.onEditDone()
         }))
         removeController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -192,16 +192,16 @@ class MainController: UIViewController {
         let sboard = UIStoryboard(name: "Main", bundle: nil) as UIStoryboard
         let view = sboard.instantiateViewController(withIdentifier: "item-viewer") as! ItemController
 
-        view.setup(items: album!.items, start: itemInd)
+        view.setup(items: album.items, start: itemInd)
         navigationController?.pushViewController(view, animated: true)
     }
 
     private func selectItem(index: IndexPath) {
-        album?.select(index: index.row)
+        album.select(index: index.row)
         itemsView.reloadItems(at: [index])
 
-        enableToolbarButtons(album?.isAnySelected() ?? false)
-        titlebar.selected = album?.getSelectedCount() ?? 0
+        enableToolbarButtons(album.isAnySelected())
+        titlebar.selected = album.getSelectedCount()
     }
 
     //override func didReceiveMemoryWarning() {

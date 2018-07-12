@@ -160,6 +160,10 @@ class AlbumInfo {
         return !selected.isEmpty
     }
 
+    public func getSelectedCount() -> Int {
+        return selected.count
+    }
+    
     public func clearSelection() {
         selected.removeAll()
     }
@@ -255,6 +259,7 @@ class AppData {
             albums = try context.fetch(albumsRequest)
 
             imagesRequest.predicate = predicate
+            imagesRequest.sortDescriptors = [NSSortDescriptor(key: "pos", ascending: true)]
             items = try context.fetch(imagesRequest)
         }
         catch let error {

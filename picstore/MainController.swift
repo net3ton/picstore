@@ -14,6 +14,7 @@ class MainController: UIViewController {
     public var album: AlbumInfo?
     private var editMode: Bool = false
     private var itemsDelegate = ItemsDelegate()
+    private var titlebar = Titlebar()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +33,6 @@ class MainController: UIViewController {
     }
 
     private func initTitlebar() {
-        let titlebar = Titlebar()
         titlebar.onTapHandler = album!.isRoot() ? nil : onTitleTap
         titlebar.caption = album!.getName()
         titlebar.count = album!.items.count
@@ -82,6 +82,7 @@ class MainController: UIViewController {
 
     public func refresh() {
         itemsView.reloadData()
+        titlebar.count = album!.items.count
     }
 
     private func updateNavigation() {
@@ -200,6 +201,7 @@ class MainController: UIViewController {
         itemsView.reloadItems(at: [index])
 
         enableToolbarButtons(album?.isAnySelected() ?? false)
+        titlebar.selected = album?.getSelectedCount() ?? 0
     }
 
     //override func didReceiveMemoryWarning() {

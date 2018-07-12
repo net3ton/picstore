@@ -29,10 +29,19 @@ class Titlebar: UIView {
             return labelCaption.text
         }
     }
-    
+
     public var count: Int {
         set {
             labelInfo.text = String(format: "%i items", newValue)
+        }
+        get {
+            return 0
+        }
+    }
+
+    public var selected: Int {
+        set {
+            labelInfo.text = String(format: "%i selected", newValue)
         }
         get {
             return 0

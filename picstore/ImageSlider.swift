@@ -71,21 +71,17 @@ class ImageSliderItem: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDe
         
         self.setZoomScale(1.0, animated: false)
         self.minimumZoomScale = 1.0
+        self.contentSize = size
 
         imageView.frame = CGRect(origin: CGPoint.zero, size: size)
         centerContent()
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        centerContent()
-    }
-
     private func calculateContentSize() -> CGSize {
         guard let image = imageView.image else {
             return self.frame.size
         }
-
+        
         let picRatio = image.size.width / image.size.height
         let screenRatio = self.frame.width / self.frame.height
         var viewSize: CGSize!
@@ -240,13 +236,10 @@ class ImageSlider: UIView {
             }
 
             view.frame = CGRect(origin: CGPoint(x: size.width * CGFloat(view.pos), y: 0), size: size)
+            view.initSize()
         }
 
         setScrollViewPosition(ADVANCE)
-        
-        for case let view as ImageSliderItem in scrollView.subviews {
-            view.initSize()
-        }
     }
 
     private func moveVeiws(with delta: Int) {

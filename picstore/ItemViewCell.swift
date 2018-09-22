@@ -30,7 +30,3 @@ class AlbumViewCell: UICollectionViewCell {
         imageSelection.isHidden = !on
     }
 }
-
-class ParentViewCell: UICollectionViewCell {
-    public static let NAME = "ParentCell"
-}

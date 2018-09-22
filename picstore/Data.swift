@@ -59,6 +59,10 @@ extension ImageObject {
         
         return thumbData
     }
+    
+    public func save() {
+        appData.save()
+    }
 }
 
 
@@ -73,6 +77,17 @@ class AlbumInfo {
         self.parent = parent
         self.items = items
         self.albums = albums
+    }
+
+    public func refresh(finish: (() -> Void)?) {
+        DispatchQueue.global(qos: .background).async {
+            let allitems = appData.getAllItems(album: self.parent)
+
+            DispatchQueue.main.async {
+                self.items = allitems
+                finish?()
+            }
+        }
     }
 
     public func isRoot() -> Bool {
@@ -260,15 +275,60 @@ class AppData {
 
             imagesRequest.predicate = predicate
             imagesRequest.sortDescriptors = [NSSortDescriptor(key: "pos", ascending: true)]
+            //imagesRequest.propertiesToFetch = ["name", "thumb"]
+            //imagesRequest.resultType = .dictionaryResultType
+            imagesRequest.fetchLimit = 28
             items = try context.fetch(imagesRequest)
         }
         catch let error {
             print("Failed to fetch spend record! ERROR: " + error.localizedDescription)
         }
-
+        
         return AlbumInfo(parent: album, items: items, albums: albums)
     }
+    
+    public func getAllItems(album: AlbumObject?) -> [ImageObject] {
+        let imagesRequest = NSFetchRequest<ImageObject>(entityName: "Image")
+        let context = getContext()
 
+        do {
+            var predicate: NSPredicate?
+            
+            if album == nil {
+                predicate = NSPredicate(format: "parent = nil")
+            }
+            else {
+                predicate = NSPredicate(format: "parent = %@", album!)
+            }
+
+            imagesRequest.predicate = predicate
+            imagesRequest.sortDescriptors = [NSSortDescriptor(key: "pos", ascending: true)]
+            //imagesRequest.propertiesToFetch = ["name", "thumb"]
+            return try context.fetch(imagesRequest)
+        }
+        catch let error {
+            print("Failed to fetch spend record! ERROR: " + error.localizedDescription)
+        }
+
+        return []
+    }
+
+    public func getFavoriteItems() -> [ImageObject] {
+        do {
+            let imagesRequest: NSFetchRequest<ImageObject> = ImageObject.fetchRequest()
+            
+            imagesRequest.predicate = NSPredicate(format: "rating > 0")
+            imagesRequest.sortDescriptors = [NSSortDescriptor(key: "pos", ascending: true)]
+            
+            return try getContext().fetch(imagesRequest)
+        }
+        catch let error {
+            print("Failed to fetch spend record! ERROR: " + error.localizedDescription)
+        }
+        
+        return []
+    }
+    
     public func addAlbum(_ name: String, parent: AlbumObject?) -> AlbumObject {
         let context = getContext()
         let albumEntity = NSEntityDescription.entity(forEntityName: "Album", in: context)

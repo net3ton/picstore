@@ -32,6 +32,14 @@ class MainController: UIViewController {
         updateNavigation()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        album.refresh {
+            self.refresh()
+        }
+    }
+
     private func initTitlebar() {
         titlebar.onTapHandler = album.isRoot() ? nil : onTitleTap
         titlebar.caption = album.getName()
@@ -45,7 +53,8 @@ class MainController: UIViewController {
     @objc func onTitleTap() {
         let sboard = UIStoryboard(name: "Main", bundle: nil) as UIStoryboard
         let view = sboard.instantiateViewController(withIdentifier: "settings-album") as! AlbumController
-        
+
+        view.setup(album: album.parent)
         navigationController?.pushViewController(view, animated: true)
     }
     
@@ -67,7 +76,6 @@ class MainController: UIViewController {
         let btnDelete = UIBarButtonItem(image: UIImage(named: "delete"), style: .plain, target: self, action: #selector(onItemsDelete))
         let btnCopy = UIBarButtonItem(image: UIImage(named: "copy"), style: .plain, target: self, action: #selector(onItemsCopy))
         let btnExport = UIBarButtonItem(image: UIImage(named: "export"), style: .plain, target: self, action: #selector(onItemsExport))
-        //let btnAlbumInfo = UIBarButtonItem(image: UIImage(named: "info"), style: .plain, target: self, action: nil)
 
         let sep1 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let sep2 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
@@ -102,7 +110,6 @@ class MainController: UIViewController {
             }
 
             let btnAdd = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(onAddItem))
-            //let btnEdit = UIBarButtonItem(image: UIImage(named: "props"), style: .plain, target: self, action: #selector(onEdit))
             navigationItem.setRightBarButtonItems([btnAdd], animated: true)
         }
     }
@@ -156,12 +163,6 @@ class MainController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
 
-    @objc func onAlbumInfo() {
-        let sboard = UIStoryboard(name: "Main", bundle: nil) as UIStoryboard
-        let view = sboard.instantiateViewController(withIdentifier: "settings-album")
-        navigationController?.pushViewController(view, animated: true)
-    }
-
     @objc func onItemsDelete() {
         let removeController = UIAlertController(title: nil, message: "Delete items? It can't be undone", preferredStyle: .actionSheet);
         
@@ -190,10 +191,15 @@ class MainController: UIViewController {
 
     private func openItem(itemInd: Int) {
         let sboard = UIStoryboard(name: "Main", bundle: nil) as UIStoryboard
+        
         let view = sboard.instantiateViewController(withIdentifier: "item-viewer") as! ItemController
 
         view.setup(items: album.items, start: itemInd)
-        navigationController?.pushViewController(view, animated: true)
+        view.modalPresentationStyle = .overFullScreen
+        //view.modalTransitionStyle = .crossDissolve
+        view.modalPresentationCapturesStatusBarAppearance = true
+
+        present(view, animated: true)
     }
 
     private func selectItem(index: IndexPath) {
@@ -245,7 +251,7 @@ class ItemsDelegate: NSObject, UICollectionViewDelegate, UICollectionViewDataSou
             return cell
         }
 
-        return collectionView.dequeueReusableCell(withReuseIdentifier: ParentViewCell.NAME, for: indexPath)
+        return UICollectionViewCell()
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

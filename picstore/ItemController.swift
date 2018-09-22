@@ -11,9 +11,16 @@ import UIKit
 class ItemController: UIViewController {
     @IBOutlet weak var itemSlider: ImageSlider!
 
-    private var fullscreen = false
+    private var toolbar: UIToolbar!
+    private var navbar: UINavigationBar!
+    
+    private var fullscreen = true
+    private var statusBarHidden = false
     private var items: [ImageObject] = []
     private var startPage = 0
+    
+    private var initPanPoint: CGPoint = CGPoint(x: 0, y: 0)
+    private var initViewSize: CGSize!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,67 +28,143 @@ class ItemController: UIViewController {
         itemSlider.pagesCount = self.items.count
         itemSlider.pageCurrent = startPage
         itemSlider.imageForPage = getImageFor
-
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(onViewTap))
-        itemSlider.addGestureRecognizer(tapGesture)
-
+        itemSlider.onImageTap = onImageTap
+        itemSlider.backgroundColor = UIColor.black
+        view.backgroundColor = UIColor.black
+        
+        initViewSize = self.view.frame.size
+        
         initToolbar()
-    }
-
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-
-        navigationController?.setToolbarHidden(true, animated: true)
+        
+        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPanGesture))
+        view.addGestureRecognizer(panGesture)
     }
     
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        self.initViewSize = size
+    }
+    
+    @objc func onPanGesture(_ sender: UIPanGestureRecognizer) {
+        let touchPoint = sender.location(in: self.view.window)
+        let distance = touchPoint.y - initPanPoint.y
+        
+        if sender.state == UIGestureRecognizerState.began {
+            initPanPoint = touchPoint
+        }
+        else if sender.state == UIGestureRecognizerState.changed {
+            if distance > 0 {
+                let height = initViewSize.height - distance
+                let mul = height / initViewSize.height
+                let width = initViewSize.width * mul
+                let x = (initViewSize.width - width) / 2
+                
+                self.view.frame = CGRect(x: x, y: distance, width: width, height: height)
+                self.view.alpha = mul
+            }
+            else if distance < 0 {
+                let point = CGPoint(x: 0, y: max(-100, distance))
+                self.itemSlider.frame = CGRect(origin: point, size: self.itemSlider.frame.size)
+            }
+        }
+        else if sender.state == UIGestureRecognizerState.ended || sender.state == UIGestureRecognizerState.cancelled {
+            if distance < -100 {
+                likeItem()
+            }
+            
+            if distance > 100 {
+                self.dismiss(animated: true, completion: nil)
+            }
+            else {
+                UIView.animate(withDuration: 0.3) {
+                    self.view.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: self.initViewSize)
+                    self.view.alpha = 1.0
+                }
+            }
+            
+            UIView.animate(withDuration: 0.3) {
+                self.itemSlider.frame = CGRect(origin: CGPoint(x: 0, y: 0), size: self.itemSlider.frame.size)
+            }
+        }
+    }
+    
+    private func likeItem() {
+        let item = items[itemSlider.pageCurrent]
+        item.rating = (item.rating > 0) ? 0 : 1
+        item.save()
+        
+        print("like it =", item.rating)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        statusBarHidden = true
+        setNeedsStatusBarAppearanceUpdate()
+    }
+
     public func setup(items: [ImageObject], start: Int) {
         self.items = items
         self.startPage = start
     }
-
-    //override func didReceiveMemoryWarning() {
-    //    super.didReceiveMemoryWarning()
-    //}
 
     private func getImageFor(page: Int) -> UIImage? {
         print("getting image for page: ", page)
         return self.items[page].image
     }
 
-    @objc func onViewTap(_ sender: UITapGestureRecognizer) {
-        if sender.state == .recognized {
-            fullscreen = !fullscreen
-            toggleFullscreen()
-        }
+    private func onImageTap() {
+        toggleFullscreen()
     }
 
     private func toggleFullscreen() {
-        navigationController?.setToolbarHidden(fullscreen, animated: true)
-        navigationController?.setNavigationBarHidden(fullscreen, animated: true)
-
-        UIView.animate(withDuration: 0.3) {
-            self.itemSlider.backgroundColor = self.fullscreen ? UIColor.black : UIColor.white
+        fullscreen = !fullscreen
+        itemSlider.stopSlideshow()
+        
+        UIView.animate(withDuration: 0.2) {
+            self.toolbar.alpha = self.fullscreen ? 0.0 : 1.0
+            self.navbar.alpha = self.fullscreen ? 0.0 : 1.0
         }
     }
 
     override open var prefersStatusBarHidden: Bool {
-        return fullscreen
+        return statusBarHidden
+        //return false
     }
 
+    override func viewDidLayoutSubviews() {
+        navbar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 45)
+        toolbar.frame = CGRect(x: 0, y: view.frame.height - 45, width: view.frame.width, height: 45)
+    }
+    
     private func initToolbar() {
-        let btnDelete = UIBarButtonItem(image: UIImage(named: "delete"), style: .plain, target: self, action: #selector(onDelete))
-        let btnCopy = UIBarButtonItem(image: UIImage(named: "copy"), style: .plain, target: self, action: #selector(onCopy))
-        let btnExport = UIBarButtonItem(image: UIImage(named: "export"), style: .plain, target: self, action: #selector(onExport))
-        let btnInfo = UIBarButtonItem(image: UIImage(named: "info"), style: .plain, target: self, action: #selector(onInfo))
+        navbar = UINavigationBar()
+        navbar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 45)
+        view.addSubview(navbar)
+        
+        let navItem = UINavigationItem()
+        navItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: self, action: #selector(onBack))
+        navbar.items = [navItem]
+        navbar.alpha = 0.0
 
+        toolbar = UIToolbar()
+        toolbar.frame = CGRect(x: 0, y: view.frame.height - 45, width: view.frame.width, height: 45)
+        view.addSubview(toolbar)
+        
+        let btnDelete = UIBarButtonItem(image: UIImage(named: "delete"), style: .plain, target: self, action: #selector(onDelete))
+        let btnSlideshow = UIBarButtonItem(image: UIImage(named: "play"), style: .plain, target: self, action: #selector(onSlideshow))
+        let btnExport = UIBarButtonItem(image: UIImage(named: "export"), style: .plain, target: self, action: #selector(onExport))
+        
         let sep1 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let sep2 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        let sep3 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        self.toolbarItems = [btnDelete, sep1, btnCopy, sep2, btnInfo, sep3, btnExport]
-
-        navigationController?.setToolbarHidden(false, animated: true)
+        toolbar.items = [btnDelete, sep1, btnSlideshow, sep2, btnExport]
+        toolbar.alpha = 0.0
     }
 
+    @objc func onBack() {
+        dismiss(animated: true)
+    }
+    
     @objc func onDelete() {
     }
 
@@ -90,7 +173,9 @@ class ItemController: UIViewController {
 
     @objc func onExport() {
     }
-
-    @objc func onInfo() {
+    
+    @objc func onSlideshow() {
+        toggleFullscreen()
+        itemSlider.startSlideshow(interval: appSettings.slideshowDelay)
     }
 }

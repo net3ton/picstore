@@ -20,17 +20,30 @@ enum EAlbumHidden {
 
 
 class AlbumController: UITableViewController {
+    @IBOutlet weak var nameLabel: UILabel!
+
+    private var album: AlbumObject?
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        navigationItem.title = "Album info"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(save))
+        updateInfo()
     }
 
-    //override func didReceiveMemoryWarning() {
-    //    super.didReceiveMemoryWarning()
-    //}
+    public func setup(album: AlbumObject?) {
+        self.album = album
+    }
+
+    private func updateInfo() {
+        nameLabel.text = album?.name
+    }
+
+    @objc func save() {
+        
+    }
 
     //override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
     //}
 }

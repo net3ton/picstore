@@ -155,7 +155,7 @@ class ImageSliderItem: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDe
 
 class ImageSlider: UIView {
     private let scrollView = UIScrollView()
-    //private var slideshowTimer: Timer?
+    private var slideshowTimer: Timer?
 
     /// count of advance views in both sides
     /// and also current view (middle) index
@@ -202,10 +202,8 @@ class ImageSlider: UIView {
         for i in 0..<viewsCount {
             scrollView.addSubview(ImageSliderItem(position: i))
         }
-
-        // setup timer
     }
-
+    
     override func layoutSubviews() {
         super.layoutSubviews()
 
@@ -282,12 +280,29 @@ class ImageSlider: UIView {
 
         scrollView.scrollRectToVisible(rect, animated: false)
     }
+
+    public func startSlideshow(interval: Int) {
+        stopSlideshow()
+        slideshowTimer = Timer.scheduledTimer(timeInterval: TimeInterval(interval), target: self, selector: #selector(timerFired), userInfo: nil, repeats: true)
+    }
+    
+    public func stopSlideshow() {
+        if let timer = slideshowTimer {
+            timer.invalidate()
+            slideshowTimer = nil
+        }
+    }
+    
+    @objc func timerFired() {
+        pageCurrent = getNormalizedPage(pageCurrent + 1)
+        moveVeiws(with: 1)
+    }
 }
 
 
 extension ImageSlider: UIScrollViewDelegate {
     open func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        // stop timer
+        stopSlideshow()
     }
     
     open func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {

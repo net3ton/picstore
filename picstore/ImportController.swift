@@ -169,22 +169,26 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
         appGoogleDrive.showFilePicker(vc: root!)
     }
 
-    private func onFileDownloaded(data: Data, name: String) {
-        let docsPath = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!)
-        let filePath = docsPath.appendingPathComponent(name)
-        let fileType = get_file_type(ext: filePath.pathExtension)
-
+    private func onFileDownloaded(url: URL, name: String) {
+        let fileType = get_file_type(ext: URL(fileURLWithPath: name).pathExtension)
         var count = 0
-
+        
         if fileType == .image {
-            addImageToLibrary(data: data, name: name)
-            count += 1
+            
+            do {
+                let data = try Data(contentsOf: url)
+                addImageToLibrary(data: data, name: name)
+                count += 1
+            }
+            catch let error {
+                print(error.localizedDescription)
+                return
+            }
         }
         else if fileType == .archive {
             do {
-                try data.write(to: filePath)
-                count = importArchive(at: filePath)
-                try FileManager().removeItem(at: filePath)
+                count = importArchive(at: url)
+                try FileManager().removeItem(at: url)
             }
             catch let error {
                 print(error.localizedDescription)

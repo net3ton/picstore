@@ -16,8 +16,8 @@ class GoogleDrive: NSObject, GIDSignInDelegate, GIDSignInUIDelegate {
     private let driveService = GTLRDriveService()
     private var uiroot: UIViewController?
     private var authCompletion: (() -> Void)?
-
-    public var onFileDownloaded: ((Data, String) -> Void)?
+    
+    public var onFileDownloaded: ((URL, String) -> Void)?
 
     public func start() {
         GIDSignIn.sharedInstance().clientID = "586434866308-u600eh9utsdgclqbvv9vb3rr4h5bf010.apps.googleusercontent.com"
@@ -59,17 +59,20 @@ class GoogleDrive: NSObject, GIDSignInDelegate, GIDSignInUIDelegate {
     private func onPickedFile(id: String, name: String) {
         print(String(format: "[Google Drive] File picked: %@ (%@)", name, id))
 
-        downloadFile(fileId: id) { fdata in
-            if let data = fdata {
-                self.onFileDownloaded?(data, name)
+        downloadFile(fileId: id) { furl in
+            if let url = furl {
+                self.onFileDownloaded?(url, name)
             }
         }
     }
 
-    public func downloadFile(fileId: String, completion: @escaping ((Data?) -> Void)) {
+    public func downloadFile(fileId: String, completion: @escaping ((URL?) -> Void)) {
         let waitView = self.createWaitView(title: "Downloading")
         uiroot?.present(waitView, animated: true)
 
+        let docsPath = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!)
+        let downloadFileURL = docsPath.appendingPathComponent("download.file")
+        
         let queryGet = GTLRDriveQuery_FilesGet.queryForMedia(withFileId: fileId)
         let task = self.driveService.executeQuery(queryGet) { (ticket, result, error) -> Void in
             if error != nil {
@@ -79,21 +82,25 @@ class GoogleDrive: NSObject, GIDSignInDelegate, GIDSignInUIDelegate {
                 return
             }
             
+            /*
             if let file = result as? GTLRDataObject {
                 print("[Google Drive] File size: " + String(file.data.count))
                 waitView.dismiss(animated: true)
                 completion(file.data)
                 return
             }
+            */
             
-            print("[Google Drive] Failed to download file!")
+            print("[Google Drive] Download to url complete!")
             waitView.dismiss(animated: true)
-            completion(nil)
+            completion(downloadFileURL)
         }
         
         waitView.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
             task.cancel()
         }))
+        
+        task.objectFetcher?.destinationFileURL = downloadFileURL
         
         task.objectFetcher?.receivedProgressBlock = { last, total in
             DispatchQueue.main.async() {

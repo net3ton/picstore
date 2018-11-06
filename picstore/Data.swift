@@ -271,6 +271,7 @@ class AppData {
             }
             
             albumsRequest.predicate = predicate
+            albumsRequest.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
             albums = try context.fetch(albumsRequest)
 
             imagesRequest.predicate = predicate

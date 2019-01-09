@@ -65,21 +65,66 @@ extension ImageObject {
     }
 }
 
+enum AlbumCollections {
+    case Album
+    case Favorites1
+}
+
+/*
+class CollectionInfo {
+    private(set) var album: AlbumObject?
+    private(set) var type: AlbumCollections
+
+    init(album: AlbumObject?, type: AlbumCollections)
+    {
+        self.album = album
+        self.type = type
+    }
+    
+    public var name: String {
+        if type == .Album {
+            return album?.name!
+        }
+        
+        if type == .Favorites1 {
+            return "favs1"
+        }
+    }
+}
+*/
+
+enum CollectionTypes {
+    case Main
+    case Favourites
+    case FavouritesLand
+    case Random
+}
 
 class AlbumInfo {
     private(set) var parent: AlbumObject?
+    private(set) var name: String
+    private(set) var collections: [String] = []
     private(set) var items: [ImageObject] = []
     private(set) var albums: [AlbumObject] = []
 
     private var selected: [Int] = []
 
-    init(parent: AlbumObject?, items: [ImageObject], albums: [AlbumObject]) {
+    init(name: String?, parent: AlbumObject?, items: [ImageObject], albums: [AlbumObject]) {
+        self.name = name ?? "Main"
         self.parent = parent
         self.items = items
         self.albums = albums
+
+        if isRoot() {
+            collections = ["favs"]
+        }
     }
 
     public func refresh(finish: (() -> Void)?) {
+        if parent == nil && name != "Main" {
+            return
+        }
+        
         DispatchQueue.global(qos: .background).async {
             let allitems = appData.getAllItems(album: self.parent)
 
@@ -91,30 +136,42 @@ class AlbumInfo {
     }
 
     public func isRoot() -> Bool {
-        return parent == nil
+        return parent == nil && name == "Main"
     }
 
     public func getName() -> String {
         if parent == nil {
-            return "Main"
+            return name
         }
 
         return parent?.name ?? ""
     }
 
     public func getItemsCount() -> Int {
-        return albums.count + items.count
+        return collections.count + albums.count + items.count
     }
 
+    public func getCollectionIndex(_ index: Int) -> Int? {
+        return (index >= 0 && index < collections.count) ? index : nil
+    }
+    
     public func getAlbumIndex(_ index: Int) -> Int? {
-        return (index >= 0 && index < albums.count) ? index : nil
+        let ind = index - collections.count
+        return (ind >= 0 && ind < albums.count) ? ind : nil
     }
 
     public func getItemIndex(_ index: Int) -> Int? {
-        let ind = index - albums.count
+        let ind = index - collections.count - albums.count
         return (ind >= 0 && ind < items.count) ? ind : nil
     }
 
+    public func getCollection(index: Int) -> String? {
+        if let ind = getCollectionIndex(index) {
+            return collections[ind]
+        }
+        return nil
+    }
+    
     public func getAlbum(index: Int) -> AlbumObject? {
         if let ind = getAlbumIndex(index) {
             return albums[ind]
@@ -252,6 +309,24 @@ class AppData {
         }
     }
 
+    public func openFavorites() -> AlbumInfo {
+        let imagesRequest = NSFetchRequest<ImageObject>(entityName: "Image")
+        let context = getContext()
+        
+        var items: [ImageObject] = []
+        
+        do {
+            imagesRequest.predicate = NSPredicate(format: "rating > 0")
+            imagesRequest.sortDescriptors = [NSSortDescriptor(key: "pos", ascending: true)]
+            items = try context.fetch(imagesRequest)
+        }
+        catch let error {
+            print("Failed to fetch spend record! ERROR: " + error.localizedDescription)
+        }
+        
+        return AlbumInfo(name: "Favorites", parent: nil, items: items, albums: [])
+    }
+    
     public func open(album: AlbumObject? = nil) -> AlbumInfo {
         let albumsRequest = NSFetchRequest<AlbumObject>(entityName: "Album")
         let imagesRequest = NSFetchRequest<ImageObject>(entityName: "Image")
@@ -275,7 +350,7 @@ class AppData {
             albums = try context.fetch(albumsRequest)
 
             imagesRequest.predicate = predicate
-            imagesRequest.sortDescriptors = [NSSortDescriptor(key: "pos", ascending: true)]
+            imagesRequest.sortDescriptors = [NSSortDescriptor(key: "pos", ascending: true), NSSortDescriptor(key: "views", ascending: true)]
             //imagesRequest.propertiesToFetch = ["name", "thumb"]
             //imagesRequest.resultType = .dictionaryResultType
             imagesRequest.fetchLimit = 28
@@ -285,7 +360,7 @@ class AppData {
             print("Failed to fetch spend record! ERROR: " + error.localizedDescription)
         }
         
-        return AlbumInfo(parent: album, items: items, albums: albums)
+        return AlbumInfo(name: nil, parent: album, items: items, albums: albums)
     }
     
     public func getAllItems(album: AlbumObject?) -> [ImageObject] {
@@ -303,7 +378,7 @@ class AppData {
             }
 
             imagesRequest.predicate = predicate
-            imagesRequest.sortDescriptors = [NSSortDescriptor(key: "pos", ascending: true)]
+            imagesRequest.sortDescriptors = [NSSortDescriptor(key: "pos", ascending: true), NSSortDescriptor(key: "views", ascending: true)]
             //imagesRequest.propertiesToFetch = ["name", "thumb"]
             return try context.fetch(imagesRequest)
         }

@@ -24,6 +24,7 @@ class MainController: UIViewController {
             appGoogleDrive.start()
 
             album = appData.open()
+            top_view_controller()?.present(LockScreen(), animated: true)
         }
 
         initTitlebar()
@@ -61,6 +62,7 @@ class MainController: UIViewController {
     private func initItemsView() {
         itemsDelegate.albumData = album
         itemsDelegate.isEditMode = { return self.editMode }
+        itemsDelegate.onOpenCollection = openCollection
         itemsDelegate.onOpenAlbum = openAlbum
         itemsDelegate.onOpenItem = openItem
         itemsDelegate.onSelectItem = selectItem
@@ -181,6 +183,14 @@ class MainController: UIViewController {
     @objc func onItemsExport() {
     }
 
+    private func openCollection(name: String) {
+        let sboard = UIStoryboard(name: "Main", bundle: nil) as UIStoryboard
+        let view = sboard.instantiateViewController(withIdentifier: "album-view") as! MainController
+        
+        view.album = appData.openFavorites()
+        navigationController?.pushViewController(view, animated: true)
+    }
+    
     private func openAlbum(album: AlbumObject?) {
         let sboard = UIStoryboard(name: "Main", bundle: nil) as UIStoryboard
         let view = sboard.instantiateViewController(withIdentifier: "album-view") as! MainController
@@ -220,6 +230,7 @@ class ItemsDelegate: NSObject, UICollectionViewDelegate, UICollectionViewDataSou
     public var albumData: AlbumInfo?
     public var isEditMode: (() -> Bool)!
 
+    public var onOpenCollection: ((String) -> Void)?
     public var onOpenAlbum: ((AlbumObject?) -> Void)?
     public var onOpenItem: ((Int) -> Void)?
     public var onSelectItem: ((IndexPath) -> Void)?
@@ -237,6 +248,13 @@ class ItemsDelegate: NSObject, UICollectionViewDelegate, UICollectionViewDataSou
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        if let collection = albumData?.getCollection(index: indexPath.row) {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumViewCell.NAME, for: indexPath) as! AlbumViewCell
+            cell.setSelected(on: isSelected(indexPath))
+            cell.nameLabel.text = collection
+            return cell
+        }
+        
         if let album = albumData?.getAlbum(index: indexPath.row) {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: AlbumViewCell.NAME, for: indexPath) as! AlbumViewCell
             cell.setSelected(on: isSelected(indexPath))
@@ -263,7 +281,7 @@ class ItemsDelegate: NSObject, UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.frame.width;
+        let width = collectionView.frame.width
         return CGSize(width: width/4 - 1, height: width/4 - 1);
     }
 
@@ -273,6 +291,11 @@ class ItemsDelegate: NSObject, UICollectionViewDelegate, UICollectionViewDataSou
             return
         }
 
+        if let collection = albumData?.getCollection(index: indexPath.row) {
+            onOpenCollection?(collection)
+            return
+        }
+        
         if let album = albumData?.getAlbum(index: indexPath.row) {
             onOpenAlbum?(album)
             return

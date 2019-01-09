@@ -19,6 +19,7 @@ class ImageSliderItem: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDe
     private var imageView = UIImageView()
     private var tapDouble: UITapGestureRecognizer!
     private var tapOnce: UITapGestureRecognizer!
+    private var fitZoomScale: CGFloat = 1.0
 
     public var image: UIImage? {
         set {
@@ -64,9 +65,11 @@ class ImageSliderItem: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDe
 
         if let image = imageView.image {
             self.maximumZoomScale = image.size.width / size.width
+            self.fitZoomScale = max(self.frame.width / size.width, self.frame.height / size.height)
         }
         else {
             self.maximumZoomScale = 1.0
+            self.fitZoomScale = 1.0
         }
         
         self.setZoomScale(1.0, animated: false)
@@ -110,9 +113,9 @@ class ImageSliderItem: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDe
             self.setZoomScale(self.minimumZoomScale, animated: true)
             return
         }
-
+        
         let pos = sender.location(in: self.imageView)
-        let zoomRect = zoomRectForScale(scale: maximumZoomScale, center: pos)
+        let zoomRect = zoomRectForScale(scale: fitZoomScale, center: pos)
         zoom(to: zoomRect, animated: true)
     }
     

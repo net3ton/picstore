@@ -51,7 +51,7 @@ class LockScreen: UIViewController, PasswordInputCompleteProtocol {
     }
     
     func validation(_ input: String) -> Bool {
-        return input == "1111"
+        return input == "1224"
     }
     
     func validationSuccess() {

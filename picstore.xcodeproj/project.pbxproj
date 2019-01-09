@@ -24,6 +24,7 @@
 		21AD53DB20766BE700BC8705 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 21AD53D920766BE700BC8705 /* Main.storyboard */; };
 		21AD53DD20766BE900BC8705 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 21AD53DC20766BE900BC8705 /* Assets.xcassets */; };
 		21C556A12077D32200D5703A /* ItemViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C556A02077D32200D5703A /* ItemViewCell.swift */; };
+		21C7760A21926381008AC4BD /* Funcs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21C7760921926381008AC4BD /* Funcs.swift */; };
 		21DA8DE420814BC3003F22D8 /* IconButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21DA8DE320814BC3003F22D8 /* IconButton.swift */; };
 		71AC4ECFE65588BD455AFB5B /* Pods_picstore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34969013B0DAE69B3A6E4F66 /* Pods_picstore.framework */; };
 /* End PBXBuildFile section */
@@ -49,6 +50,7 @@
 		21AD53DC20766BE900BC8705 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		21AD53E120766BE900BC8705 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		21C556A02077D32200D5703A /* ItemViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemViewCell.swift; sourceTree = "<group>"; };
+		21C7760921926381008AC4BD /* Funcs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Funcs.swift; sourceTree = "<group>"; };
 		21DA8DE320814BC3003F22D8 /* IconButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconButton.swift; sourceTree = "<group>"; };
 		34969013B0DAE69B3A6E4F66 /* Pods_picstore.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_picstore.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		62CCFA13E962A89BC104EDCE /* Pods-picstore.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-picstore.debug.xcconfig"; path = "Pods/Target Support Files/Pods-picstore/Pods-picstore.debug.xcconfig"; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 				2199212320DBF35D00CE1355 /* Main.xcdatamodeld */,
 				211DBBBA20E82776006E2213 /* Launch.storyboard */,
 				21AD53DC20766BE900BC8705 /* Assets.xcassets */,
+				21C7760921926381008AC4BD /* Funcs.swift */,
 				21DA8DE320814BC3003F22D8 /* IconButton.swift */,
 				211FBD1B20F4F9430014E89D /* Titlebar.swift */,
 				211DBBB420E3F0B2006E2213 /* Data.swift */,
@@ -275,6 +278,7 @@
 				21C556A12077D32200D5703A /* ItemViewCell.swift in Sources */,
 				2178E1952076CC81000E82C2 /* SettingsController.swift in Sources */,
 				211FBD1820F1F4410014E89D /* ImageSlider.swift in Sources */,
+				21C7760A21926381008AC4BD /* Funcs.swift in Sources */,
 				216044AA2077675100A24A79 /* ImportController.swift in Sources */,
 				2174F7FC20EEAAF800B970B8 /* MainController.swift in Sources */,
 				211FBD1C20F4F9430014E89D /* Titlebar.swift in Sources */,

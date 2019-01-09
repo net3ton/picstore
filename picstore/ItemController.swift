@@ -29,6 +29,7 @@ class ItemController: UIViewController {
         itemSlider.pageCurrent = startPage
         itemSlider.imageForPage = getImageFor
         itemSlider.onImageTap = onImageTap
+        itemSlider.onImageView = onImageView
         itemSlider.backgroundColor = UIColor.black
         view.backgroundColor = UIColor.black
         
@@ -96,6 +97,14 @@ class ItemController: UIViewController {
         print("like it =", item.rating)
     }
     
+    private func countItemViews() {
+        let item = items[itemSlider.pageCurrent]
+        item.views += 1
+        item.save()
+        
+        print("views =", item.views)
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
@@ -117,6 +126,11 @@ class ItemController: UIViewController {
         toggleFullscreen()
     }
 
+    private func onImageView(page: Int)
+    {
+        countItemViews()
+    }
+    
     private func toggleFullscreen() {
         fullscreen = !fullscreen
         itemSlider.stopSlideshow()

@@ -163,9 +163,12 @@ class ImageSlider: UIView {
     /// count of advance views in both sides
     /// and also current view (middle) index
     private let ADVANCE = 1
-
-    public var pageCurrent: Int = 0
-    public var pagesCount = 5
+    private var pagesCount = 5
+    private var pageCurrent: Int = 0
+    
+    public var page: Int {
+        return pageCurrent
+    }
 
     public var imageForPage: ((_ page: Int) -> UIImage?)?
     public var onImageView: ((_ page: Int) -> Void)?
@@ -178,7 +181,7 @@ class ImageSlider: UIView {
             }
         }
     }
-
+    
     override public init(frame: CGRect) {
         super.init(frame: frame)
         initialize()
@@ -206,6 +209,13 @@ class ImageSlider: UIView {
         for i in 0..<viewsCount {
             scrollView.addSubview(ImageSliderItem(position: i))
         }
+    }
+    
+    public func setup(count: Int, current: Int) {
+        self.pagesCount = count
+        self.pageCurrent = current
+        
+        onImageView?(pageCurrent)
     }
     
     override func layoutSubviews() {
@@ -298,8 +308,15 @@ class ImageSlider: UIView {
     }
     
     @objc func timerFired() {
-        pageCurrent = getNormalizedPage(pageCurrent + 1)
-        moveVeiws(with: 1)
+        changeView(delta: 1)
+    }
+
+    private func changeView(delta: Int) {
+        if delta != 0 {
+            pageCurrent = getNormalizedPage(pageCurrent + delta)
+            moveVeiws(with: delta)
+            onImageView?(pageCurrent)
+        }
     }
 }
 
@@ -313,11 +330,7 @@ extension ImageSlider: UIScrollViewDelegate {
         let pos = getScrollViewPosition()
         let delta = pos - ADVANCE
 
-        if delta != 0 {
-            pageCurrent = getNormalizedPage(pageCurrent + delta)
-            moveVeiws(with: delta)
-            onImageView?(pageCurrent)
-        }
+        changeView(delta: delta)
     }
 }
 

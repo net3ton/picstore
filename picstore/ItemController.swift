@@ -13,6 +13,7 @@ class ItemController: UIViewController {
 
     private var toolbar: UIToolbar!
     private var navbar: UINavigationBar!
+    private var navitem: UINavigationItem!
     
     private var fullscreen = true
     private var statusBarHidden = false
@@ -25,20 +26,22 @@ class ItemController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        itemSlider.pagesCount = self.items.count
-        itemSlider.pageCurrent = startPage
+        view.backgroundColor = UIColor.black
+        initViewSize = self.view.frame.size
+        initToolbar()
+        
         itemSlider.imageForPage = getImageFor
         itemSlider.onImageTap = onImageTap
         itemSlider.onImageView = onImageView
         itemSlider.backgroundColor = UIColor.black
-        view.backgroundColor = UIColor.black
-        
-        initViewSize = self.view.frame.size
-        
-        initToolbar()
+        itemSlider.setup(count: items.count, current: startPage)
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPanGesture))
         view.addGestureRecognizer(panGesture)
+    }
+    
+    private var currentItem: ImageObject {
+        return items[itemSlider.page]
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -90,7 +93,7 @@ class ItemController: UIViewController {
     }
     
     private func likeItem() {
-        let item = items[itemSlider.pageCurrent]
+        let item = currentItem
         item.rating = (item.rating > 0) ? 0 : 1
         item.save()
         
@@ -98,7 +101,7 @@ class ItemController: UIViewController {
     }
     
     private func countItemViews() {
-        let item = items[itemSlider.pageCurrent]
+        let item = currentItem
         item.views += 1
         item.save()
         
@@ -129,6 +132,7 @@ class ItemController: UIViewController {
     private func onImageView(page: Int)
     {
         countItemViews()
+        navitem.title = String.init(format: "%i / %i", page+1, self.items.count)
     }
     
     private func toggleFullscreen() {
@@ -156,9 +160,9 @@ class ItemController: UIViewController {
         navbar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 45)
         view.addSubview(navbar)
         
-        let navItem = UINavigationItem()
-        navItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: self, action: #selector(onBack))
-        navbar.items = [navItem]
+        navitem = UINavigationItem()
+        navitem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: self, action: #selector(onBack))
+        navbar.items = [navitem]
         navbar.alpha = 0.0
 
         toolbar = UIToolbar()
@@ -180,9 +184,6 @@ class ItemController: UIViewController {
     }
     
     @objc func onDelete() {
-    }
-
-    @objc func onCopy() {
     }
 
     @objc func onExport() {

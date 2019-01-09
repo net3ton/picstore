@@ -44,6 +44,16 @@ class ItemController: UIViewController {
         return items[itemSlider.page]
     }
     
+    private func getRatingIcon(rating: Int16) -> UIImage? {
+        let iconLike = UIImage(named: "like")
+        
+        if rating > 0 {
+            return iconLike
+        }
+        
+        return nil
+    }
+    
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         self.initViewSize = size
@@ -98,6 +108,7 @@ class ItemController: UIViewController {
         item.save()
         
         print("like it =", item.rating)
+        updateRatingIcon()
     }
     
     private func countItemViews() {
@@ -132,7 +143,13 @@ class ItemController: UIViewController {
     private func onImageView(page: Int)
     {
         countItemViews()
+        updateRatingIcon()
         navitem.title = String.init(format: "%i / %i", page+1, self.items.count)
+        
+    }
+    
+    private func updateRatingIcon() {
+        navitem.rightBarButtonItem?.image = getRatingIcon(rating: currentItem.rating)
     }
     
     private func toggleFullscreen() {
@@ -162,6 +179,7 @@ class ItemController: UIViewController {
         
         navitem = UINavigationItem()
         navitem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: self, action: #selector(onBack))
+        navitem.rightBarButtonItem = UIBarButtonItem(image: nil, style: .plain, target: nil, action: nil)
         navbar.items = [navitem]
         navbar.alpha = 0.0
 

@@ -165,6 +165,7 @@ class ImageSlider: UIView {
     public var pagesCount = 5
 
     public var imageForPage: ((_ page: Int) -> UIImage?)?
+    public var onImageView: ((_ page: Int) -> Void)?
     public var onImageTap: (() -> Void)?
     {
         didSet {
@@ -312,6 +313,7 @@ extension ImageSlider: UIScrollViewDelegate {
         if delta != 0 {
             pageCurrent = getNormalizedPage(pageCurrent + delta)
             moveVeiws(with: delta)
+            onImageView?(pageCurrent)
         }
     }
 }

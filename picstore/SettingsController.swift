@@ -16,15 +16,16 @@ class SettingsController: UITableViewController {
     @IBOutlet weak var checkSlideshowRandom: UISwitch!
     @IBOutlet weak var labelGoogleDrive: UILabel!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         updateLabels()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        appSettings.save()
     }
-
+    
     func updateLabels() {
         labelSlideshowDelay.text = "\(appSettings.slideshowDelay) sec."
         labelPasscode.text = "none"
@@ -37,41 +38,19 @@ class SettingsController: UITableViewController {
     
     @IBAction func onTouchIDEnabled(_ sender: UISwitch) {
         appSettings.passTouchID = sender.isOn
-        appSettings.save()
     }
 
     @IBAction func onSlideshowRandom(_ sender: UISwitch) {
         appSettings.slideshowRandom = sender.isOn
-        appSettings.save()
     }
-
-    // MARK: - Table view data source
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        /*
         if indexPath.section == 0 && indexPath.row == 0 {
             let pinView = LockScreen()
             present(pinView, animated: true)
         }
-
-        if indexPath.section == 1 && indexPath.row == 0 {
-            let alert = UIAlertController(title: "Delay Interval", message: "", preferredStyle: .alert)
-            alert.addTextField { (textField) in
-                textField.text = String(appSettings.slideshowDelay)
-            }
- 
-            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
-                let textfield = alert.textFields?.first
-                if let delay = Int(textfield?.text ?? "") {
-                    appSettings.slideshowDelay = delay
-                    self.updateLabels()
-                }
-            }))
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            
-            present(alert, animated: true, completion: {
-                tableView.deselectRow(at: indexPath, animated: true)
-            })
-        }
+        */
 
         if indexPath.section == 2 && indexPath.row == 0 {
             if appGoogleDrive.isLogined() {
@@ -86,7 +65,4 @@ class SettingsController: UITableViewController {
             }
         }
     }
-
-    //override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    //}
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2109197D21E7B44F00295B87 /* DelayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2109197C21E7B44F00295B87 /* DelayController.swift */; };
 		21130CA320EADBB800097C26 /* LockController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21130CA220EADBB800097C26 /* LockController.swift */; };
 		211DBBB520E3F0B2006E2213 /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211DBBB420E3F0B2006E2213 /* Data.swift */; };
 		211DBBB920E65822006E2213 /* GoogleDrive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211DBBB820E65822006E2213 /* GoogleDrive.swift */; };
@@ -31,6 +32,7 @@
 
 /* Begin PBXFileReference section */
 		0E97ADD3A9629732C066A74D /* Pods-picstore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-picstore.release.xcconfig"; path = "Pods/Target Support Files/Pods-picstore/Pods-picstore.release.xcconfig"; sourceTree = "<group>"; };
+		2109197C21E7B44F00295B87 /* DelayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayController.swift; sourceTree = "<group>"; };
 		21130CA220EADBB800097C26 /* LockController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LockController.swift; sourceTree = "<group>"; };
 		211DBBB420E3F0B2006E2213 /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		211DBBB820E65822006E2213 /* GoogleDrive.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GoogleDrive.swift; sourceTree = "<group>"; };
@@ -96,6 +98,7 @@
 				2178E1942076CC81000E82C2 /* SettingsController.swift */,
 				2174F7FD20F0AC0C00B970B8 /* AlbumController.swift */,
 				216044A92077675100A24A79 /* ImportController.swift */,
+				2109197C21E7B44F00295B87 /* DelayController.swift */,
 				21130CA220EADBB800097C26 /* LockController.swift */,
 				21AD53D920766BE700BC8705 /* Main.storyboard */,
 				2199212320DBF35D00CE1355 /* Main.xcdatamodeld */,
@@ -273,6 +276,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2109197D21E7B44F00295B87 /* DelayController.swift in Sources */,
 				211FBD1620F14BD20014E89D /* ItemController.swift in Sources */,
 				21130CA320EADBB800097C26 /* LockController.swift in Sources */,
 				21C556A12077D32200D5703A /* ItemViewCell.swift in Sources */,

@@ -10,6 +10,35 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Delay Controller-->
+        <scene sceneID="xh1-JZ-eKJ">
+            <objects>
+                <viewController id="uFZ-sz-Z4I" customClass="DelayController" customModule="picstore" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="YV8-YQ-Lfg">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Vrp-m3-HyP">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                            </pickerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="6ag-sI-hgl" firstAttribute="bottom" secondItem="Vrp-m3-HyP" secondAttribute="bottom" id="cQ7-Pn-fjF"/>
+                            <constraint firstItem="Vrp-m3-HyP" firstAttribute="top" secondItem="6ag-sI-hgl" secondAttribute="top" id="i6R-fD-czn"/>
+                            <constraint firstItem="Vrp-m3-HyP" firstAttribute="leading" secondItem="6ag-sI-hgl" secondAttribute="leading" id="om3-hd-Pqa"/>
+                            <constraint firstItem="Vrp-m3-HyP" firstAttribute="trailing" secondItem="6ag-sI-hgl" secondAttribute="trailing" id="vDf-s8-L4Y"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6ag-sI-hgl"/>
+                    </view>
+                    <connections>
+                        <outlet property="delayPicker" destination="Vrp-m3-HyP" id="usL-So-Npa"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="HON-2b-wva" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="790" y="130"/>
+        </scene>
         <!--Settings-->
         <scene sceneID="HcQ-LA-zFG">
             <objects>
@@ -100,6 +129,9 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="uFZ-sz-Z4I" kind="show" id="TaF-dQ-5uI"/>
+                                        </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" id="mjA-Ed-whr">
                                         <rect key="frame" x="0.0" y="243.5" width="375" height="44"/>
@@ -300,6 +332,32 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FKj-eX-iXe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2574" y="130"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="WLD-cu-JSb">
+            <objects>
+                <viewController id="VZT-ZT-HU8" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="g8r-Wk-Pmm">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5bS-DV-fBY">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                            </pickerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="5bS-DV-fBY" firstAttribute="leading" secondItem="g8r-Wk-Pmm" secondAttribute="leading" id="DfZ-V7-hEW"/>
+                            <constraint firstItem="5bS-DV-fBY" firstAttribute="top" secondItem="64d-6K-q3s" secondAttribute="top" id="Y1K-W5-j3D"/>
+                            <constraint firstItem="64d-6K-q3s" firstAttribute="bottom" secondItem="5bS-DV-fBY" secondAttribute="bottom" id="vbo-MJ-WtB"/>
+                            <constraint firstItem="64d-6K-q3s" firstAttribute="trailing" secondItem="5bS-DV-fBY" secondAttribute="trailing" id="wj3-RU-bwl"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="64d-6K-q3s"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="d9e-A9-eRV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3436" y="130"/>
         </scene>
         <!--Items-->
         <scene sceneID="UtB-Dp-7or">

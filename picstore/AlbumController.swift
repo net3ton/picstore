@@ -21,14 +21,15 @@ enum EAlbumHidden {
 
 class AlbumController: UITableViewController {
     @IBOutlet weak var nameLabel: UILabel!
-
+    @IBOutlet weak var sortLabel: UILabel!
+    
     private var album: AlbumObject?
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.title = "Album info"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(save))
+        navigationItem.title = "Album"
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Apply", style: .plain, target: self, action: #selector(apply))
         updateInfo()
     }
 
@@ -40,10 +41,18 @@ class AlbumController: UITableViewController {
         nameLabel.text = album?.name
     }
 
-    @objc func save() {
-        
+    @objc func apply() {
     }
 
-    //override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    //}
+    private func onSortPicked(sort: AlbumSort?) {
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "album-sort" {
+            if let sortController = segue.destination as? SortingController {
+                sortController.onSortPicked = onSortPicked
+                sortController.initSort = AlbumSort.Rating
+            }
+        }
+    }
 }

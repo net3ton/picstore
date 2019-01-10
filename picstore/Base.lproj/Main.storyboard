@@ -316,6 +316,9 @@
                                                 </label>
                                             </subviews>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="VZT-ZT-HU8" kind="show" identifier="album-sort" id="EVd-6G-Kau"/>
+                                        </connections>
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
@@ -327,16 +330,17 @@
                     </tableView>
                     <connections>
                         <outlet property="nameLabel" destination="5Mv-Wk-ZgA" id="lcc-Zl-0dA"/>
+                        <outlet property="sortLabel" destination="ank-gp-NVM" id="P51-RG-tf6"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="FKj-eX-iXe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2574" y="130"/>
         </scene>
-        <!--View Controller-->
+        <!--Sorting Controller-->
         <scene sceneID="WLD-cu-JSb">
             <objects>
-                <viewController id="VZT-ZT-HU8" sceneMemberID="viewController">
+                <viewController id="VZT-ZT-HU8" customClass="SortingController" customModule="picstore" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="g8r-Wk-Pmm">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -354,6 +358,9 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="64d-6K-q3s"/>
                     </view>
+                    <connections>
+                        <outlet property="sortPicker" destination="5bS-DV-fBY" id="Ew9-0y-UQR"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d9e-A9-eRV" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -218,6 +218,19 @@ class ImageSlider: UIView {
         onImageView?(pageCurrent)
     }
     
+    public func setPage(_ page: Int)
+    {
+        self.pageCurrent = page
+    }
+    
+    public func invalidatePages() {
+        for case let view as ImageSliderItem in scrollView.subviews {
+            view.page = -1
+        }
+        
+        layoutViews()
+    }
+    
     override func layoutSubviews() {
         super.layoutSubviews()
 

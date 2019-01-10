@@ -14,10 +14,12 @@ class ItemController: UIViewController {
     private var toolbar: UIToolbar!
     private var navbar: UINavigationBar!
     private var navitem: UINavigationItem!
+    private var btnShuffle: UIBarButtonItem!
     
     private var fullscreen = true
     private var statusBarHidden = false
     private var items: [ImageObject] = []
+    private var itemInds: [Int] = []
     private var startPage = 0
     
     private var initPanPoint: CGPoint = CGPoint(x: 0, y: 0)
@@ -38,20 +40,6 @@ class ItemController: UIViewController {
         
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(onPanGesture))
         view.addGestureRecognizer(panGesture)
-    }
-    
-    private var currentItem: ImageObject {
-        return items[itemSlider.page]
-    }
-    
-    private func getRatingIcon(rating: Int16) -> UIImage? {
-        let iconLike = UIImage(named: "like")
-        
-        if rating > 0 {
-            return iconLike
-        }
-        
-        return nil
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
@@ -102,12 +90,31 @@ class ItemController: UIViewController {
         }
     }
     
+    private var currentItem: ImageObject {
+        return items[itemInds[itemSlider.page]]
+    }
+    
+    private func getImageFor(page: Int) -> UIImage? {
+        print("getting image for page: ", page)
+        return items[itemInds[page]].image
+    }
+    
+    private func getRatingIcon(rating: Int16) -> UIImage? {
+        let iconLike = UIImage(named: "like")
+        
+        if rating > 0 {
+            return iconLike
+        }
+        
+        return nil
+    }
+    
     private func likeItem() {
         let item = currentItem
         item.rating = (item.rating > 0) ? 0 : 1
         item.save()
         
-        print("like it =", item.rating)
+        //print("like it =", item.rating)
         updateRatingIcon()
     }
     
@@ -116,7 +123,7 @@ class ItemController: UIViewController {
         item.views += 1
         item.save()
         
-        print("views =", item.views)
+        //print("views =", item.views)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -124,16 +131,38 @@ class ItemController: UIViewController {
         
         statusBarHidden = true
         setNeedsStatusBarAppearanceUpdate()
+        
+        itemsShuffle(on: appSettings.slideshowRandom)
     }
 
     public func setup(items: [ImageObject], start: Int) {
         self.items = items
         self.startPage = start
+        
+        self.itemInds.removeAll()
+        for i in 0..<items.count {
+            self.itemInds.append(i)
+        }
     }
-
-    private func getImageFor(page: Int) -> UIImage? {
-        print("getting image for page: ", page)
-        return self.items[page].image
+    
+    private func itemsShuffle(on: Bool) {
+        let curpage = itemInds[itemSlider.page]
+        
+        if on {
+            itemInds.shuffle()
+            if let pos = itemInds.firstIndex(of: curpage) {
+                itemInds[pos] = itemInds[itemSlider.page]
+                itemInds[itemSlider.page] = curpage
+            }
+            
+            btnShuffle.tintColor = toolbar.items![0].tintColor
+        }
+        else {
+            itemInds.sort()
+            itemSlider.setPage(curpage)
+            
+            btnShuffle.tintColor = UIColor(ciColor: .gray)
+        }
     }
 
     private func onImageTap() {
@@ -144,7 +173,7 @@ class ItemController: UIViewController {
     {
         countItemViews()
         updateRatingIcon()
-        navitem.title = String.init(format: "%i / %i", page+1, self.items.count)
+        navitem.title = String.init(format: "%i / %i", itemInds[page]+1, self.items.count)
         
     }
     
@@ -190,10 +219,15 @@ class ItemController: UIViewController {
         let btnDelete = UIBarButtonItem(image: UIImage(named: "delete"), style: .plain, target: self, action: #selector(onDelete))
         let btnSlideshow = UIBarButtonItem(image: UIImage(named: "play"), style: .plain, target: self, action: #selector(onSlideshow))
         let btnExport = UIBarButtonItem(image: UIImage(named: "export"), style: .plain, target: self, action: #selector(onExport))
+        btnShuffle = UIBarButtonItem(image: UIImage(named: "shuffle"), style: .plain, target: self, action: #selector(onShuffle))
+        btnShuffle.tintColor = UIColor(ciColor: .gray)
         
         let sep1 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         let sep2 = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-        toolbar.items = [btnDelete, sep1, btnSlideshow, sep2, btnExport]
+        let sepp = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        sepp.width = 20
+
+        toolbar.items = [btnDelete, sep1, btnSlideshow, sepp, btnShuffle, sep2, btnExport]
         toolbar.alpha = 0.0
     }
 
@@ -210,5 +244,11 @@ class ItemController: UIViewController {
     @objc func onSlideshow() {
         toggleFullscreen()
         itemSlider.startSlideshow(interval: appSettings.slideshowDelay)
+    }
+    
+    @objc func onShuffle() {
+        appSettings.slideshowRandom = !appSettings.slideshowRandom
+        itemsShuffle(on: appSettings.slideshowRandom)
+        itemSlider.invalidatePages()
     }
 }

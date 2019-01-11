@@ -61,7 +61,8 @@ class ImageSliderItem: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDe
     }
 
     public func initSize() {
-        let size = calculateContentSize()
+        var size = calculateContentSize()
+        var scale: CGFloat = 1.0
 
         if let image = imageView.image {
             self.maximumZoomScale = image.size.width / size.width
@@ -72,7 +73,13 @@ class ImageSliderItem: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDe
             self.fitZoomScale = 1.0
         }
         
-        self.setZoomScale(1.0, animated: false)
+        if size.width > 0 && appSettings.defaultScale == .ScreenFit {
+            size.height *= fitZoomScale
+            size.width *= fitZoomScale
+            scale = fitZoomScale
+        }
+        
+        self.setZoomScale(scale, animated: false)
         self.minimumZoomScale = 1.0
         self.contentSize = size
 

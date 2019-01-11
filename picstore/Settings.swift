@@ -13,7 +13,19 @@ enum EPasscodeType: Int {
     case pin4 = 1
 }
 
+enum EDefaultScale: Int {
+    case ImageFit = 0
+    case ScreenFit = 1
+}
+
+let appInfoDefaultScale: [String] = [
+    "ImageFit",
+    "ScreenFit"
+]
+
 class AppSettings {
+    var defaultScale: EDefaultScale = ConfDefaults.DEFAULT_SCALE
+
     var slideshowDelay: Int = ConfDefaults.SLIDE_DELAY
     var slideshowRandom: Bool = false
 
@@ -21,6 +33,8 @@ class AppSettings {
     var passTouchID: Bool = true
 
     struct ConfNames {
+        static let DEFAULT_SCALE = "default-scale"
+        
         static let SLIDE_DELAY = "slide-delay"
         static let SLIDE_RANDOM = "slide-random"
 
@@ -29,12 +43,15 @@ class AppSettings {
     }
     
     struct ConfDefaults {
+        static let DEFAULT_SCALE: EDefaultScale = .ImageFit
         static let SLIDE_DELAY: Int = 3
     }
     
     func load() {
         let conf = UserDefaults.standard
-
+        
+        defaultScale = EDefaultScale(rawValue: conf.integer(forKey: ConfNames.DEFAULT_SCALE)) ?? ConfDefaults.DEFAULT_SCALE
+        
         slideshowDelay = conf.object(forKey: ConfNames.SLIDE_DELAY) as? Int ?? ConfDefaults.SLIDE_DELAY
         slideshowRandom = conf.bool(forKey: ConfNames.SLIDE_RANDOM)
 
@@ -45,6 +62,8 @@ class AppSettings {
     func save() {
         let conf = UserDefaults.standard
 
+        conf.set(defaultScale.rawValue, forKey: ConfNames.DEFAULT_SCALE)
+        
         conf.set(slideshowDelay, forKey: ConfNames.SLIDE_DELAY)
         conf.set(slideshowRandom, forKey: ConfNames.SLIDE_RANDOM)
 

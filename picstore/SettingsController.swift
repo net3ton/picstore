@@ -15,6 +15,7 @@ class SettingsController: UITableViewController {
     @IBOutlet weak var checkTouchID: UISwitch!
     @IBOutlet weak var checkSlideshowRandom: UISwitch!
     @IBOutlet weak var labelGoogleDrive: UILabel!
+    @IBOutlet weak var labelScale: UILabel!
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -27,6 +28,8 @@ class SettingsController: UITableViewController {
     }
     
     func updateLabels() {
+        labelScale.text = appInfoDefaultScale[appSettings.defaultScale.rawValue]
+        
         labelSlideshowDelay.text = "\(appSettings.slideshowDelay) sec."
         labelPasscode.text = "none"
 
@@ -52,7 +55,7 @@ class SettingsController: UITableViewController {
         }
         */
 
-        if indexPath.section == 2 && indexPath.row == 0 {
+        if indexPath.section == 3 && indexPath.row == 0 {
             if appGoogleDrive.isLogined() {
                 appGoogleDrive.signOut() {
                     self.updateLabels()

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,15 @@
 		211FBD1620F14BD20014E89D /* ItemController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211FBD1520F14BD20014E89D /* ItemController.swift */; };
 		211FBD1820F1F4410014E89D /* ImageSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211FBD1720F1F4410014E89D /* ImageSlider.swift */; };
 		211FBD1C20F4F9430014E89D /* Titlebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 211FBD1B20F4F9430014E89D /* Titlebar.swift */; };
+		2135382823EF5BA900714586 /* ExportMedia.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2135382723EF5BA900714586 /* ExportMedia.storyboard */; };
+		2135382A23EF5E8000714586 /* ExportMediaController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2135382923EF5E8000714586 /* ExportMediaController.swift */; };
+		215D547723F8316500DA59DA /* ExportSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215D547623F8316500DA59DA /* ExportSettings.swift */; };
+		215D547923F8379E00DA59DA /* ExportDateController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215D547823F8379E00DA59DA /* ExportDateController.swift */; };
+		215D547B23F8507C00DA59DA /* ExportMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215D547A23F8507C00DA59DA /* ExportMedia.swift */; };
+		215D547D23F88D9200DA59DA /* WaitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215D547C23F88D9200DA59DA /* WaitView.swift */; };
+		215D547F23F8B56A00DA59DA /* ExportFoldersController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 215D547E23F8B56A00DA59DA /* ExportFoldersController.swift */; };
+		215F573524006E97003A4BF9 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 215F573424006E97003A4BF9 /* Settings.storyboard */; };
+		215F573824008B85003A4BF9 /* Album.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 215F573724008B85003A4BF9 /* Album.storyboard */; };
 		216044AA2077675100A24A79 /* ImportController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216044A92077675100A24A79 /* ImportController.swift */; };
 		216D8B00208915B00066F97F /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 216D8AFF208915B00066F97F /* Settings.swift */; };
 		2174F7FC20EEAAF800B970B8 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2174F7FB20EEAAF800B970B8 /* MainController.swift */; };
@@ -43,6 +52,15 @@
 		211FBD1520F14BD20014E89D /* ItemController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemController.swift; sourceTree = "<group>"; };
 		211FBD1720F1F4410014E89D /* ImageSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSlider.swift; sourceTree = "<group>"; };
 		211FBD1B20F4F9430014E89D /* Titlebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Titlebar.swift; sourceTree = "<group>"; };
+		2135382723EF5BA900714586 /* ExportMedia.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ExportMedia.storyboard; sourceTree = "<group>"; };
+		2135382923EF5E8000714586 /* ExportMediaController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportMediaController.swift; sourceTree = "<group>"; };
+		215D547623F8316500DA59DA /* ExportSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportSettings.swift; sourceTree = "<group>"; };
+		215D547823F8379E00DA59DA /* ExportDateController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportDateController.swift; sourceTree = "<group>"; };
+		215D547A23F8507C00DA59DA /* ExportMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportMedia.swift; sourceTree = "<group>"; };
+		215D547C23F88D9200DA59DA /* WaitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaitView.swift; sourceTree = "<group>"; };
+		215D547E23F8B56A00DA59DA /* ExportFoldersController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportFoldersController.swift; sourceTree = "<group>"; };
+		215F573424006E97003A4BF9 /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
+		215F573724008B85003A4BF9 /* Album.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Album.storyboard; sourceTree = "<group>"; };
 		216044A92077675100A24A79 /* ImportController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportController.swift; sourceTree = "<group>"; };
 		216D8AFF208915B00066F97F /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		2174F7FB20EEAAF800B970B8 /* MainController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
@@ -74,6 +92,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2135382B23F0BEA300714586 /* ExportMedia */ = {
+			isa = PBXGroup;
+			children = (
+				2135382723EF5BA900714586 /* ExportMedia.storyboard */,
+				2135382923EF5E8000714586 /* ExportMediaController.swift */,
+				215D547823F8379E00DA59DA /* ExportDateController.swift */,
+				215D547E23F8B56A00DA59DA /* ExportFoldersController.swift */,
+				215D547623F8316500DA59DA /* ExportSettings.swift */,
+				215D547A23F8507C00DA59DA /* ExportMedia.swift */,
+				215D547C23F88D9200DA59DA /* WaitView.swift */,
+			);
+			path = ExportMedia;
+			sourceTree = "<group>";
+		};
+		215F573624006F92003A4BF9 /* AlbumProps */ = {
+			isa = PBXGroup;
+			children = (
+				215F573724008B85003A4BF9 /* Album.storyboard */,
+				2174F7FD20F0AC0C00B970B8 /* AlbumController.swift */,
+				21B2376521E7BE27009B518A /* SortingController.swift */,
+			);
+			path = AlbumProps;
+			sourceTree = "<group>";
+		};
+		218D95AB23FF5C9100CE1EE9 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				215F573424006E97003A4BF9 /* Settings.storyboard */,
+				2178E1942076CC81000E82C2 /* SettingsController.swift */,
+				2109197C21E7B44F00295B87 /* DelayController.swift */,
+				2103F4A421E8995200567DD6 /* ScaleController.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 		21AD53C920766BE700BC8705 = {
 			isa = PBXGroup;
 			children = (
@@ -99,16 +152,14 @@
 				2174F7FB20EEAAF800B970B8 /* MainController.swift */,
 				211FBD1520F14BD20014E89D /* ItemController.swift */,
 				21C556A02077D32200D5703A /* ItemViewCell.swift */,
-				2178E1942076CC81000E82C2 /* SettingsController.swift */,
-				2174F7FD20F0AC0C00B970B8 /* AlbumController.swift */,
 				216044A92077675100A24A79 /* ImportController.swift */,
-				2109197C21E7B44F00295B87 /* DelayController.swift */,
-				2103F4A421E8995200567DD6 /* ScaleController.swift */,
-				21B2376521E7BE27009B518A /* SortingController.swift */,
 				21130CA220EADBB800097C26 /* LockController.swift */,
 				21AD53D920766BE700BC8705 /* Main.storyboard */,
 				2199212320DBF35D00CE1355 /* Main.xcdatamodeld */,
 				211DBBBA20E82776006E2213 /* Launch.storyboard */,
+				218D95AB23FF5C9100CE1EE9 /* Settings */,
+				215F573624006F92003A4BF9 /* AlbumProps */,
+				2135382B23F0BEA300714586 /* ExportMedia */,
 				21AD53DC20766BE900BC8705 /* Assets.xcassets */,
 				21C7760921926381008AC4BD /* Funcs.swift */,
 				21DA8DE320814BC3003F22D8 /* IconButton.swift */,
@@ -202,7 +253,10 @@
 			files = (
 				21AD53DD20766BE900BC8705 /* Assets.xcassets in Resources */,
 				21AD53DB20766BE700BC8705 /* Main.storyboard in Resources */,
+				215F573824008B85003A4BF9 /* Album.storyboard in Resources */,
+				2135382823EF5BA900714586 /* ExportMedia.storyboard in Resources */,
 				211DBBBB20E82776006E2213 /* Launch.storyboard in Resources */,
+				215F573524006E97003A4BF9 /* Settings.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -232,29 +286,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-picstore/Pods-picstore-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/GTMOAuth2/GTMOAuth2.framework",
-				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleAPIClientForREST/GoogleAPIClientForREST.framework",
-				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
-				"${BUILT_PRODUCTS_DIR}/NohanaImagePicker/NohanaImagePicker.framework",
-				"${BUILT_PRODUCTS_DIR}/SmileLock/SmileLock.framework",
-				"${BUILT_PRODUCTS_DIR}/ZIPFoundation/ZIPFoundation.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-picstore/Pods-picstore-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMOAuth2.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleAPIClientForREST.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NohanaImagePicker.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SmileLock.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZIPFoundation.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-picstore/Pods-picstore-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-picstore/Pods-picstore-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-picstore/Pods-picstore-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		D6A1644FAD10DF5A07786983 /* [CP] Copy Pods Resources */ = {
@@ -262,17 +303,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-picstore/Pods-picstore-resources.sh",
-				"${PODS_ROOT}/GoogleSignIn/Resources/GoogleSignIn.bundle",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-picstore/Pods-picstore-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleSignIn.bundle",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-picstore/Pods-picstore-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-picstore/Pods-picstore-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-picstore/Pods-picstore-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -283,20 +323,26 @@
 			buildActionMask = 2147483647;
 			files = (
 				21B2376621E7BE27009B518A /* SortingController.swift in Sources */,
+				215D547D23F88D9200DA59DA /* WaitView.swift in Sources */,
 				2109197D21E7B44F00295B87 /* DelayController.swift in Sources */,
 				211FBD1620F14BD20014E89D /* ItemController.swift in Sources */,
 				21130CA320EADBB800097C26 /* LockController.swift in Sources */,
+				2135382A23EF5E8000714586 /* ExportMediaController.swift in Sources */,
 				21C556A12077D32200D5703A /* ItemViewCell.swift in Sources */,
 				2103F4A521E8995200567DD6 /* ScaleController.swift in Sources */,
 				2178E1952076CC81000E82C2 /* SettingsController.swift in Sources */,
 				211FBD1820F1F4410014E89D /* ImageSlider.swift in Sources */,
 				21C7760A21926381008AC4BD /* Funcs.swift in Sources */,
+				215D547723F8316500DA59DA /* ExportSettings.swift in Sources */,
+				215D547923F8379E00DA59DA /* ExportDateController.swift in Sources */,
 				216044AA2077675100A24A79 /* ImportController.swift in Sources */,
 				2174F7FC20EEAAF800B970B8 /* MainController.swift in Sources */,
 				211FBD1C20F4F9430014E89D /* Titlebar.swift in Sources */,
 				211DBBB520E3F0B2006E2213 /* Data.swift in Sources */,
 				21AD53D620766BE700BC8705 /* AppDelegate.swift in Sources */,
 				21DA8DE420814BC3003F22D8 /* IconButton.swift in Sources */,
+				215D547F23F8B56A00DA59DA /* ExportFoldersController.swift in Sources */,
+				215D547B23F8507C00DA59DA /* ExportMedia.swift in Sources */,
 				211DBBB920E65822006E2213 /* GoogleDrive.swift in Sources */,
 				2174F7FE20F0AC0C00B970B8 /* AlbumController.swift in Sources */,
 				216D8B00208915B00066F97F /* Settings.swift in Sources */,
@@ -437,7 +483,7 @@
 			baseConfigurationReference = 62CCFA13E962A89BC104EDCE /* Pods-picstore.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 5324A38GMP;
 				INFOPLIST_FILE = picstore/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -447,6 +493,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oskharkov.picstore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = PicstoreDev;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -457,7 +504,7 @@
 			baseConfigurationReference = 0E97ADD3A9629732C066A74D /* Pods-picstore.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 5324A38GMP;
 				INFOPLIST_FILE = picstore/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -467,6 +514,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.oskharkov.picstore;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = PicstoreDev;
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

@@ -1,5 +1,5 @@
 //
-//  Main2Controller.swift
+//  MainController.swift
 //  picstore
 //
 //  Created by Aleksandr Kharkov on 05/07/2018.
@@ -36,11 +36,16 @@ class MainController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        album.refresh {
-            self.refresh()
-        }
+        // comeneted on updating to ios13
+        //album.refresh {
+        //    self.refresh()
+        //}
     }
 
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        return .portrait
+    }
+    
     private func initTitlebar() {
         titlebar.onTapHandler = album.isRoot() ? nil : onTitleTap
         titlebar.caption = album.getName()
@@ -52,8 +57,8 @@ class MainController: UIViewController {
     }
 
     @objc func onTitleTap() {
-        let sboard = UIStoryboard(name: "Main", bundle: nil) as UIStoryboard
-        let view = sboard.instantiateViewController(withIdentifier: "settings-album") as! AlbumController
+        let sboard = UIStoryboard(name: "Album", bundle: nil) as UIStoryboard
+        let view = sboard.instantiateViewController(withIdentifier: "album-props") as! AlbumController
 
         view.setup(album: album.parent)
         navigationController?.pushViewController(view, animated: true)
@@ -117,7 +122,7 @@ class MainController: UIViewController {
     }
 
     @objc func onSettings() {
-        let sboard = UIStoryboard(name: "Main", bundle: nil) as UIStoryboard
+        let sboard = UIStoryboard(name: "Settings", bundle: nil) as UIStoryboard
         let view = sboard.instantiateViewController(withIdentifier: "settings-main")
         navigationController?.pushViewController(view, animated: true)
     }
@@ -201,7 +206,6 @@ class MainController: UIViewController {
 
     private func openItem(itemInd: Int) {
         let sboard = UIStoryboard(name: "Main", bundle: nil) as UIStoryboard
-        
         let view = sboard.instantiateViewController(withIdentifier: "item-viewer") as! ItemController
 
         view.setup(items: album.items, start: itemInd)
@@ -266,6 +270,8 @@ class ItemsDelegate: NSObject, UICollectionViewDelegate, UICollectionViewDataSou
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ImageViewCell.NAME, for: indexPath) as! ImageViewCell
             cell.setSelected(on: isSelected(indexPath))
             cell.imageView.image = item.icon
+            //cell.imageView.layer.cornerRadius = 5.0
+            //cell.imageView.clipsToBounds = true
             return cell
         }
 
@@ -281,8 +287,14 @@ class ItemsDelegate: NSObject, UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.frame.width
-        return CGSize(width: width/4 - 1, height: width/4 - 1);
+        
+        var countPerLine = 4
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            countPerLine = 6
+        }
+        
+        let itemSize = collectionView.frame.width / CGFloat(countPerLine) - 1
+        return CGSize(width: itemSize, height: itemSize);
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

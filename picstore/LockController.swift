@@ -15,6 +15,10 @@ class LockScreen: UIViewController, PasswordInputCompleteProtocol {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if #available(iOS 13.0, *) {
+            self.isModalInPresentation = true
+        }
+        
         passwordView = PasswordContainerView.create(withDigit: 4)
         passwordView.delegate = self
         passwordView.touchAuthenticationEnabled = true
@@ -32,6 +36,16 @@ class LockScreen: UIViewController, PasswordInputCompleteProtocol {
     
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return .portrait
+    }
+    
+    static func showModal() {
+        if let topView = top_view_controller() {
+            if topView is LockScreen {
+                return
+            }
+
+            topView.present(LockScreen(), animated: true)
+        }
     }
     
     func passwordInputComplete(_ passwordContainerView: PasswordContainerView, input: String) {

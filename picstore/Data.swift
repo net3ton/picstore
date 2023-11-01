@@ -65,10 +65,6 @@ extension ImageObject {
     }
 }
 
-enum AlbumCollections {
-    case Album
-    case Favorites1
-}
 
 /*
 class CollectionInfo {
@@ -93,13 +89,6 @@ class CollectionInfo {
 }
 */
 
-enum CollectionTypes {
-    case Main
-    case Favourites
-    case FavouritesLand
-    case Random
-}
-
 class AlbumInfo {
     private(set) var parent: AlbumObject?
     private(set) var name: String
@@ -120,6 +109,7 @@ class AlbumInfo {
         }
     }
 
+    /*
     public func refresh(finish: (() -> Void)?) {
         if parent == nil && name != "Main" {
             return
@@ -134,6 +124,7 @@ class AlbumInfo {
             }
         }
     }
+    */
 
     public func isRoot() -> Bool {
         return parent == nil && name == "Main"
@@ -353,7 +344,7 @@ class AppData {
             imagesRequest.sortDescriptors = [NSSortDescriptor(key: "pos", ascending: true), NSSortDescriptor(key: "views", ascending: true)]
             //imagesRequest.propertiesToFetch = ["name", "thumb"]
             //imagesRequest.resultType = .dictionaryResultType
-            imagesRequest.fetchLimit = 28
+            //imagesRequest.fetchLimit = 28
             items = try context.fetch(imagesRequest)
         }
         catch let error {
@@ -389,6 +380,7 @@ class AppData {
         return []
     }
 
+    /*
     public func getFavoriteItems() -> [ImageObject] {
         do {
             let imagesRequest: NSFetchRequest<ImageObject> = ImageObject.fetchRequest()
@@ -400,6 +392,23 @@ class AppData {
         }
         catch let error {
             print("Failed to fetch spend record! ERROR: " + error.localizedDescription)
+        }
+        
+        return []
+    }
+    */
+    
+    public func getRatedItems(minrate: Int, sort: NSSortDescriptor) -> [ImageObject] {
+        do {
+            let imagesRequest: NSFetchRequest<ImageObject> = ImageObject.fetchRequest()
+            
+            imagesRequest.predicate = NSPredicate(format: String.init(format: "rating >= %d", minrate))
+            imagesRequest.sortDescriptors = [sort]
+            
+            return try getContext().fetch(imagesRequest)
+        }
+        catch let error {
+            print("Failed to fetch images! ERROR: " + error.localizedDescription)
         }
         
         return []

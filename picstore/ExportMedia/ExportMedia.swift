@@ -47,6 +47,8 @@ private func exportImageWithData(_ imgData: Data?, _ imgName: String, to exportP
     
     // convert from HEIC to JPEG
     if imageExt == ".heic" {
+        print("export quality:", CGFloat(quality))
+        
         let image: UIImage = UIImage(data: imageData)!
         imageData = UIImageJPEGRepresentation(image, CGFloat(quality))!
         imageExt = ".jpg"
@@ -113,9 +115,13 @@ private func createFolder(parent: URL, name: String) -> URL? {
 }
 
 
-private func createFolder(parent: URL, for date: Date, forEveryMonth: Bool) -> URL? {
+private func createFolder(parent: URL, for date: Date, rule: EExportSubfolders) -> URL? {
+    if rule == .None {
+        return parent
+    }
+    
     let formatter = DateFormatter()
-    formatter.dateFormat = forEveryMonth ? "YYYY-MM" : "YYYY-MM-dd"
+    formatter.dateFormat = (rule == .Months) ? "yyyy-MM" : "yyyy-MM-dd"
 
     let folderName = formatter.string(from: date)
     return createFolder(parent: parent, name: folderName)
@@ -143,6 +149,10 @@ public func exportMediaToDocs(with cfg: ExportSettings, notifier: ExportMediaNot
     videoOptions.isNetworkAccessAllowed = true
     videoOptions.version = .current
     
+    // date format to add to export asset name
+    let dateNameFormat = DateFormatter()
+    dateNameFormat.dateFormat = "yyyyMMdd"
+    
     // create export documents subfolder
     let docPath = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!)
     guard let exportPath = createFolder(parent: docPath, name: cfg.folderName) else {
@@ -151,7 +161,7 @@ public func exportMediaToDocs(with cfg: ExportSettings, notifier: ExportMediaNot
     
     // create subfolder for non-photos if needed
     var nonPhotoFolder: URL? = nil
-    if cfg.notPhotosAside {
+    if cfg.isNotPhotosAside {
         nonPhotoFolder = createFolder(parent: exportPath, name: "Media")
     }
     
@@ -168,24 +178,20 @@ public func exportMediaToDocs(with cfg: ExportSettings, notifier: ExportMediaNot
         notifier.onExportMediaStep(step: index, count: fetchResult.count)
         
         let asset = fetchResult.object(at: index)
+        let assetDate = asset.creationDate ?? Date()
         
         // fetch asset name
-        guard let assetName = asset.value(forKey: "filename") as? String else {
+        guard var assetName = asset.value(forKey: "filename") as? String else {
             print("Could not get asset name! Asset was skipped.")
             continue
         }
         
-        let assetDate = asset.creationDate!
-        var assetFolder = exportPath
+        if cfg.isAddDateToName {
+            assetName = dateNameFormat.string(from: assetDate) + "_" + assetName
+        }
         
         // create subfolder if specified
-        if cfg.createSubFolders != .None {
-            let everyMonth = (cfg.createSubFolders == .Months)
-            
-            if let subFolderPath = createFolder(parent: exportPath, for: assetDate, forEveryMonth: everyMonth) {
-                assetFolder = subFolderPath
-            }
-        }
+        let assetFolder = createFolder(parent: exportPath, for: assetDate, rule: cfg.createSubFolders) ?? exportPath
         
         autoreleasepool {
             if asset.mediaType == .image {

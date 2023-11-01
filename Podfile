@@ -1,10 +1,10 @@
-platform :ios, '9.0'
+platform :ios, '13.0'
 
 use_frameworks!
 target 'picstore' do
-  pod 'NohanaImagePicker', '~> 0.9'
-  pod 'ZIPFoundation', '~> 0.9'
-  pod 'GoogleAPIClientForREST/Drive', '~> 1.2.1'
-  pod 'GoogleSignIn', '~> 4.1.1'
+  pod 'GoogleSignIn', '~> 7.0.0'
+  pod 'GoogleAPIClientForREST/Drive', '~> 3.0.0'
+  pod 'NohanaImagePicker'
+  pod 'ZIPFoundation'
   pod 'SmileLock'
 end

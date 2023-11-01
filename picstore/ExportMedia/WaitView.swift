@@ -19,3 +19,14 @@ public func createWaitModal(title: String) -> UIAlertController {
     
     return waitView
 }
+
+
+public func presentWaitModal(title: String) -> UIAlertController? {
+    if let topView = top_view_controller() {
+        let waitView = createWaitModal(title: title)
+        topView.present(waitView, animated: true)
+        return waitView
+    }
+    
+    return nil
+}

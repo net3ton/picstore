@@ -24,7 +24,8 @@ class MainController: UIViewController {
             appGoogleDrive.start()
 
             album = appData.open()
-            top_view_controller()?.present(LockScreen(), animated: true)
+            //top_view_controller()?.present(LockScreen(), animated: true)
+            LockScreen.showModal()
         }
 
         initTitlebar()
@@ -36,15 +37,15 @@ class MainController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        // comeneted on updating to ios13
+        // commeneted on updating to ios13
         //album.refresh {
         //    self.refresh()
         //}
     }
 
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        return .portrait
-    }
+    //override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    //    return .portrait
+    //}
     
     private func initTitlebar() {
         titlebar.onTapHandler = album.isRoot() ? nil : onTitleTap
@@ -78,7 +79,7 @@ class MainController: UIViewController {
         let longGesture = UILongPressGestureRecognizer(target: self, action: #selector(onEdit))
         itemsView.addGestureRecognizer(longGesture)
     }
-
+    
     private func initToolbar() {
         let btnDelete = UIBarButtonItem(image: UIImage(named: "delete"), style: .plain, target: self, action: #selector(onItemsDelete))
         let btnCopy = UIBarButtonItem(image: UIImage(named: "copy"), style: .plain, target: self, action: #selector(onItemsCopy))
@@ -186,6 +187,42 @@ class MainController: UIViewController {
     }
 
     @objc func onItemsExport() {
+        
+        let docPath = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!)
+        let exportPath = docPath.appendingPathComponent("ExportPhoto")
+        
+        if !FileManager().fileExists(atPath: exportPath.absoluteString) {
+            do {
+                try FileManager().createDirectory(at: exportPath, withIntermediateDirectories: true, attributes: nil)
+            }
+            catch {
+                print("Could not create folder: ", exportPath.absoluteString)
+                return
+            }
+        }
+        
+        let waitView = createWaitModal(title: "Export")
+        present(waitView, animated: true)
+        
+        var numDone = 0
+        for item in album.items {
+            guard let imageName = item.name else {
+                continue
+            }
+            
+            guard let imageData = item.data else {
+                continue
+            }
+            
+            //print("export:", imageName, "size:", imageData.count)
+            let filePath = exportPath.appendingPathComponent(imageName)
+            FileManager().createFile(atPath: filePath.path, contents: imageData, attributes: nil)
+            
+            numDone += 1
+            waitView.message = String(format: "%d / %d", numDone, album.items.count)
+        }
+        
+        waitView.dismiss(animated: true)
     }
 
     private func openCollection(name: String) {
@@ -205,13 +242,13 @@ class MainController: UIViewController {
     }
 
     private func openItem(itemInd: Int) {
-        let sboard = UIStoryboard(name: "Main", bundle: nil) as UIStoryboard
-        let view = sboard.instantiateViewController(withIdentifier: "item-viewer") as! ItemController
+        let view = ItemController()
 
         view.setup(items: album.items, start: itemInd)
         view.modalPresentationStyle = .overFullScreen
         //view.modalTransitionStyle = .crossDissolve
         view.modalPresentationCapturesStatusBarAppearance = true
+        //view.preferredStatusBarStyle = UIStatusBarStyle
 
         present(view, animated: true)
     }
@@ -223,10 +260,6 @@ class MainController: UIViewController {
         enableToolbarButtons(album.isAnySelected())
         titlebar.selected = album.getSelectedCount()
     }
-
-    //override func didReceiveMemoryWarning() {
-    //    super.didReceiveMemoryWarning()
-    //}
 }
 
 

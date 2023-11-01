@@ -32,16 +32,18 @@ private func get_file_type(ext: String) -> EImportType {
     return .unknown
 }
 
+//let RAR = Data(bytes: [0x52, 0x61, 0x72])
+//let A7Z = Data(bytes: [0x37, 0x7A, 0xBC, 0xAF])
+
 private func is_image_data(_ data: Data) -> Bool {
     let JPG = Data(bytes: [0xFF, 0xD8, 0xFF])
     let PNG = Data(bytes: [0x89, 0x50, 0x4E, 0x47])
     let GIF = Data(bytes: [0x47, 0x49, 0x46, 0x38])
-    //let RAR = Data(bytes: [0x52, 0x61, 0x72])
-    //let A7Z = Data(bytes: [0x37, 0x7A, 0xBC, 0xAF])
-    let signs = [JPG, PNG, GIF]
 
+    let signs = [JPG, PNG, GIF]
+    
     for signature in signs {
-        if data.range(of: signature, options: .anchored, in: 0..<signature.count) != nil {
+        if data.subdata(in: 0..<signature.count).elementsEqual(signature) {
             return true
         }
     }
@@ -53,6 +55,8 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
     private var root: MainController?
     private var album: AlbumInfo?
 
+    private var waitView: UIAlertController?
+    
     @IBOutlet weak var separatorImport: UIView!
 
     override func viewDidLoad() {
@@ -60,101 +64,148 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
         separatorImport.layer.cornerRadius = 2
     }
 
-    //override func didReceiveMemoryWarning() {
-    //    super.didReceiveMemoryWarning()
-    //}
-
     // UIPopoverPresentationControllerDelegate
     internal func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
         return UIModalPresentationStyle.none
     }
-
-    //override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-    //    print("prepare")
-    //}
 
     public func setup(vc: MainController, album: AlbumInfo) {
         self.root = vc
         self.album = album
     }
 
-    private func addImageToLibrary(data: Data, name: String) {
+    private func addImageToLibrary(data: Data, name: String, numDone: Int) -> Int {
         if !is_image_data(data) {
-            print("Failed to import image! ERROR: wrong image format")
-            return
+            print("Failed to import image! ERROR: wrong image format!")
+            return numDone
         }
-
-        album?.addImage(data: data, name: name)
+        
+        DispatchQueue.main.async {
+            self.album?.addImage(data: data, name: name)
+            self.waitView?.message = String(format: "%d", numDone)
+        }
+        return numDone + 1
     }
 
-    @IBAction func photosPressed(_ sender: UIButton) {
-        dismiss(animated: true, completion: nil)
-        assetsPickerDelegate.present(vc: root!, album: album!)
-    }
+    private func importArchiveToLibrary(at fileUrl: URL, numDone: Int) -> Int {
+        var count = numDone
+        
+        if let arch = Archive(url: fileUrl, accessMode: .read) {
+            for item in arch {
+                autoreleasepool {
+                    if item.type == .file {
+                        let pathUrl = URL(fileURLWithPath: item.path)
+                        if get_file_type(ext: pathUrl.pathExtension) == .image {
+                            //DispatchQueue.global(qos: .userInitiated).async {
+                                do {
+                                    var fileData = Data(capacity: Int(item.uncompressedSize))
+                                    let _ = try arch.extract(item, consumer: { (data) in
+                                        fileData.append(data)
+                                    })
 
-    @IBAction func sharedFolderPressed(_ sender: UIButton) {
-        var count = 0
-
-        do {
-            let docsPath = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!)
-            let fileList = try FileManager().contentsOfDirectory(atPath: docsPath.path)
-
-            for fileName in fileList {
-                let filePath = docsPath.appendingPathComponent(fileName)
-                let fileType = get_file_type(ext: filePath.pathExtension)
-
-                if fileType == .image {
-                    if let fdata = FileManager().contents(atPath: filePath.path) {
-                        addImageToLibrary(data: fdata, name: fileName)
-                        count += 1
+                                    count = self.addImageToLibrary(data: fileData, name: pathUrl.lastPathComponent, numDone: count)
+                                }
+                                catch let error {
+                                    print(error.localizedDescription)
+                                }
+                            //}
+                        }
                     }
                 }
-                else if fileType == .archive {
-                    count += importArchive(at: filePath)
-                }
-
-                try FileManager().removeItem(at: filePath)
             }
+        }
+
+        return count
+    }
+    
+    private func processFile(url: URL, name: String) -> Int {
+        let fileType = get_file_type(ext: URL(fileURLWithPath: name).pathExtension)
+        //let fileType = get_file_type(ext: url.pathExtension)
+        var count = 0
+        
+        print("process:", url, "name:", name, "ext:", fileType)
+        
+        do {
+            if fileType == .image {
+                print("image!")
+                //if let fdata = FileManager().contents(atPath: filePath.path)
+                
+                let data = try Data(contentsOf: url)
+                count = addImageToLibrary(data: data, name: name, numDone: count)
+            }
+            else if fileType == .archive {
+                print("arch!")
+                count = importArchiveToLibrary(at: url, numDone: count)
+            }
+            
+            try FileManager().removeItem(at: url)
         }
         catch let error {
             print(error.localizedDescription)
         }
-
-        print(String.init(format: "added %i items", count))
-
-        dismiss(animated: true, completion: nil)
-        album?.save()
-        root?.refresh()
+        
+        return count
     }
-
-    /*
-    static public var sharedFolderFilesCount: Int {
-        get {
+    
+    @IBAction func photosPressed(_ sender: UIButton) {
+        dismiss(animated: true, completion: nil)
+        assetsPickerDelegate.present(vc: root!, album: album!)
+    }
+    
+    @IBAction func exportMediaPressed(_ sender: UIButton) {
+        dismiss(animated: true, completion: nil)
+        
+        let sboard = UIStoryboard(name: "ExportMedia", bundle: nil) as UIStoryboard
+        let view = sboard.instantiateViewController(withIdentifier: "export-media")
+        //root?.navigationController?.pushViewController(view, animated: true)
+        
+        //let btnExit = UIBarButtonItem(title: "Back", style: .plain, target: self, action: nil)
+        
+        let nav = UINavigationController()
+        nav.viewControllers = [view]
+        //nav.setLeftBarButtonItems([btnExit], animated: true)
+        
+        root?.present(nav, animated: true)
+    }
+    
+    @IBAction func sharedFolderPressed(_ sender: UIButton) {
+        dismiss(animated: true, completion: nil)
+        
+        waitView = createWaitModal(title: "Import")
+        present(waitView!, animated: true)
+        
+        DispatchQueue.global(qos: .background).async {
             var count = 0
-            
+
             do {
                 let docsPath = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!)
                 let fileList = try FileManager().contentsOfDirectory(atPath: docsPath.path)
-                
+
                 for fileName in fileList {
-                    if get_file_type(ext: URL(fileURLWithPath: fileName).pathExtension) != .unknown {
-                        count += 1
-                    }
+                    let filePath = docsPath.appendingPathComponent(fileName)
+                    count += self.processFile(url: filePath, name: fileName)
                 }
             }
             catch let error {
                 print(error.localizedDescription)
             }
             
-            return count
+            DispatchQueue.main.async {
+                self.waitView?.dismiss(animated: true)
+                self.waitView = nil
+            }
+            
+            print(String.init(format: "added %i items", count))
+
+            self.album?.save()
+            self.root?.refresh()
         }
     }
-    */
 
     @IBAction func googlePressed(_ sender: UIButton) {
         dismiss(animated: true, completion: nil)
 
-        if appGoogleDrive.isLogined() {
+        if appGoogleDrive.isDriveEnabled() {
             googlePickFile()
         }
         else {
@@ -170,64 +221,22 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
     }
 
     private func onFileDownloaded(url: URL, name: String) {
-        let fileType = get_file_type(ext: URL(fileURLWithPath: name).pathExtension)
-        var count = 0
+        self.waitView = createWaitModal(title: "Import")
+        self.root?.present(self.waitView!, animated: true)
         
-        if fileType == .image {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let count = self.processFile(url: url, name: name)
             
-            do {
-                let data = try Data(contentsOf: url)
-                addImageToLibrary(data: data, name: name)
-                count += 1
-            }
-            catch let error {
-                print(error.localizedDescription)
-                return
-            }
-        }
-        else if fileType == .archive {
-            do {
-                count = importArchive(at: url)
-                try FileManager().removeItem(at: url)
-            }
-            catch let error {
-                print(error.localizedDescription)
-                return
+            DispatchQueue.main.async {
+                self.waitView?.dismiss(animated: true)
+                self.waitView = nil
+                
+                print(String.init(format: "added %i items", count))
+
+                self.album?.save()
+                self.root?.refresh()
             }
         }
-
-        print(String.init(format: "added %i items", count))
-
-        album?.save()
-        root?.refresh()
-    }
-
-    private func importArchive(at fileUrl: URL) -> Int {
-        var count = 0
-        if let arch = Archive(url: fileUrl, accessMode: .read) {
-            for item in arch {
-                if item.type == .file {
-                    let pathUrl = URL(fileURLWithPath: item.path)
-                    if get_file_type(ext: pathUrl.pathExtension) == .image {
-                        do {
-                            var fileData = Data(capacity: item.uncompressedSize)
-                            let _ = try arch.extract(item, consumer: { (data) in
-                                fileData.append(data)
-                            })
-
-                            //print(item.path)
-                            addImageToLibrary(data: fileData, name: pathUrl.lastPathComponent)
-                            count += 1
-                        }
-                        catch let error {
-                            print(error.localizedDescription)
-                        }
-                    }
-                }
-            }
-        }
-
-        return count
     }
 
     @IBAction func newFolderPressed(_ sender: UIButton) {
@@ -261,15 +270,6 @@ class ImportController: UIViewController, UINavigationControllerDelegate, UIPopo
     }
 }
 
-/*
-func imageToData(image: UIImage) -> Data? {
-    if let cgImage = image.cgImage, cgImage.renderingIntent == .defaultIntent {
-        return UIImageJPEGRepresentation(image, 1.0)
-    }
-
-    return UIImagePNGRepresentation(image)
-}
-*/
 
 let assetsPickerDelegate = AssetsPickerDelegate()
 

@@ -36,7 +36,8 @@ public class ExportSettings {
     
     var jpegQuality: Float = 0.85
     var createSubFolders: EExportSubfolders = .Months
-    var notPhotosAside: Bool = true
+    var isNotPhotosAside: Bool = true
+    var isAddDateToName: Bool = true
     
     var from: Date = Date()
     {

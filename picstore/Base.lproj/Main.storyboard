@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="w8v-Ri-aBu">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="w8v-Ri-aBu">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -106,6 +106,7 @@
                                 </cells>
                             </collectionView>
                         </subviews>
+                        <viewLayoutGuide key="safeArea" id="Ogg-IN-Ed0"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="8jl-Qc-Mdd" firstAttribute="trailing" secondItem="Ogg-IN-Ed0" secondAttribute="trailing" id="5K9-32-mVY"/>
@@ -113,7 +114,6 @@
                             <constraint firstItem="8jl-Qc-Mdd" firstAttribute="top" secondItem="Ogg-IN-Ed0" secondAttribute="top" id="PmN-u2-Qmf"/>
                             <constraint firstItem="8jl-Qc-Mdd" firstAttribute="leading" secondItem="Ogg-IN-Ed0" secondAttribute="leading" id="VeS-Ba-3bA"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="Ogg-IN-Ed0"/>
                     </view>
                     <navigationItem key="navigationItem" title="Pic Store" id="7at-DO-bH6"/>
                     <connections>
@@ -146,7 +146,7 @@
                                                     <constraint firstAttribute="height" constant="56" id="Xng-mf-Z51"/>
                                                 </constraints>
                                                 <state key="normal" title="photos" image="photos">
-                                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="titleColor" systemColor="darkTextColor"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="photosPressed:" destination="9f4-cc-894" eventType="touchUpInside" id="oZI-Ap-LGO"/>
@@ -159,7 +159,7 @@
                                                     <constraint firstAttribute="height" constant="56" id="L6X-zE-xdI"/>
                                                 </constraints>
                                                 <state key="normal" title="itunes" image="itunes">
-                                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="titleColor" systemColor="darkTextColor"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="sharedFolderPressed:" destination="9f4-cc-894" eventType="touchUpInside" id="xoj-Xo-k2Z"/>
@@ -173,7 +173,7 @@
                                                     <constraint firstAttribute="height" constant="56" id="Ukw-zp-TZX"/>
                                                 </constraints>
                                                 <state key="normal" title="google" image="google">
-                                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="titleColor" systemColor="darkTextColor"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="googlePressed:" destination="9f4-cc-894" eventType="touchUpInside" id="ri2-hj-CKV"/>
@@ -199,7 +199,7 @@
                                                     <constraint firstAttribute="width" secondItem="7Pj-L3-O56" secondAttribute="height" id="fWF-6M-QbX"/>
                                                 </constraints>
                                                 <state key="normal" title="album" image="new-album">
-                                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="titleColor" systemColor="darkTextColor"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="newFolderPressed:" destination="9f4-cc-894" eventType="touchUpInside" id="mZg-gY-xrk"/>
@@ -213,7 +213,7 @@
                                                     <constraint firstAttribute="height" constant="56" id="wId-Vx-xMF"/>
                                                 </constraints>
                                                 <state key="normal" title="export" image="export">
-                                                    <color key="titleColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <color key="titleColor" systemColor="darkTextColor"/>
                                                 </state>
                                                 <connections>
                                                     <action selector="exportMediaPressed:" destination="9f4-cc-894" eventType="touchUpInside" id="90N-Q9-Q0g"/>
@@ -228,14 +228,14 @@
                                 </constraints>
                             </stackView>
                         </subviews>
-                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <viewLayoutGuide key="safeArea" id="Y1G-xr-pUv"/>
+                        <color key="backgroundColor" systemColor="groupTableViewBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="5G8-1D-huq" firstAttribute="top" secondItem="Y1G-xr-pUv" secondAttribute="top" constant="8" id="MyX-mW-m6O"/>
                             <constraint firstItem="5G8-1D-huq" firstAttribute="leading" secondItem="Y1G-xr-pUv" secondAttribute="leading" constant="8" id="hpv-0J-Cny"/>
                             <constraint firstItem="Y1G-xr-pUv" firstAttribute="trailing" secondItem="5G8-1D-huq" secondAttribute="trailing" constant="8" id="pSb-DW-CA6"/>
                         </constraints>
                         <edgeInsets key="layoutMargins" top="0.0" left="20" bottom="0.0" right="20"/>
-                        <viewLayoutGuide key="safeArea" id="Y1G-xr-pUv"/>
                     </view>
                     <value key="contentSizeForViewInPopover" type="size" width="200" height="150"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -247,36 +247,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iPF-vd-QpI" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2434" y="682"/>
-        </scene>
-        <!--Viewer-->
-        <scene sceneID="u4y-cu-nTf">
-            <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="VB6-bj-2sl" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <viewController storyboardIdentifier="item-viewer" id="4aR-pK-cbE" userLabel="Viewer" customClass="ItemController" customModule="picstore" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="X90-zi-zAa">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0hl-yp-bQd" customClass="ImageSlider" customModule="picstore" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                            </view>
-                        </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="0hl-yp-bQd" firstAttribute="top" secondItem="NCG-PP-LUW" secondAttribute="top" id="08S-bt-EQD"/>
-                            <constraint firstItem="NCG-PP-LUW" firstAttribute="trailing" secondItem="0hl-yp-bQd" secondAttribute="trailing" id="9rX-YK-OU5"/>
-                            <constraint firstItem="0hl-yp-bQd" firstAttribute="leading" secondItem="NCG-PP-LUW" secondAttribute="leading" id="T1M-ie-s4G"/>
-                            <constraint firstItem="NCG-PP-LUW" firstAttribute="bottom" secondItem="0hl-yp-bQd" secondAttribute="bottom" id="qEp-2O-EuV"/>
-                        </constraints>
-                        <viewLayoutGuide key="safeArea" id="NCG-PP-LUW"/>
-                    </view>
-                    <connections>
-                        <outlet property="itemSlider" destination="0hl-yp-bQd" id="C1F-mK-aZT"/>
-                    </connections>
-                </viewController>
-            </objects>
-            <point key="canvasLocation" x="1713" y="1653"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="fMO-MG-0bF">
@@ -297,6 +267,23 @@
             <point key="canvasLocation" x="791" y="901"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="7Pj-L3-O56">
+            <size key="intrinsicContentSize" width="60" height="30"/>
+        </designable>
+        <designable name="D1T-er-Uc3">
+            <size key="intrinsicContentSize" width="63" height="30"/>
+        </designable>
+        <designable name="UBh-ct-GeL">
+            <size key="intrinsicContentSize" width="62" height="30"/>
+        </designable>
+        <designable name="Zp1-9v-tbd">
+            <size key="intrinsicContentSize" width="60" height="30"/>
+        </designable>
+        <designable name="ojP-GZ-2DP">
+            <size key="intrinsicContentSize" width="64" height="30"/>
+        </designable>
+    </designables>
     <resources>
         <image name="album" width="50" height="50"/>
         <image name="export" width="30" height="30"/>
@@ -305,5 +292,11 @@
         <image name="itunes" width="30" height="30"/>
         <image name="new-album" width="30" height="30"/>
         <image name="photos" width="30" height="30"/>
+        <systemColor name="darkTextColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="groupTableViewBackgroundColor">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
     </resources>
 </document>

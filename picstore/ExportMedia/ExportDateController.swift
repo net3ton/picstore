@@ -51,7 +51,7 @@ class ExportDateController: UIViewController, UIPickerViewDelegate, UIPickerView
     {
         let countFromNow = 10 * 12 // 10 years
         let formatter = DateFormatter()
-        formatter.dateFormat = "LLLL YYYY"
+        formatter.dateFormat = "LLLL yyyy"
         
         // this month's first day
         let calendar = Calendar.current

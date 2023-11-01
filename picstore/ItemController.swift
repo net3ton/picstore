@@ -9,25 +9,38 @@
 import UIKit
 
 class ItemController: UIViewController {
-    @IBOutlet weak var itemSlider: ImageSlider!
+    //@IBOutlet weak var itemSlider: ImageSlider!
 
     private var toolbar: UIToolbar!
     private var navbar: UINavigationBar!
     private var navitem: UINavigationItem!
     private var btnShuffle: UIBarButtonItem!
     
+    private var statusBarHidden: Bool = false {
+        didSet{
+            UIView.animate(withDuration: 0.2) { () -> Void in
+                self.setNeedsStatusBarAppearanceUpdate()
+                self.updateViewConstraints()
+            }
+         }
+    }
+    
     private var fullscreen = true
-    private var statusBarHidden = false
+    //private var statusBarHidden = false
     private var items: [ImageObject] = []
     private var itemInds: [Int] = []
     private var startPage = 0
     
+    private var itemSlider: ImageSlider!
     private var initPanPoint: CGPoint = CGPoint(x: 0, y: 0)
     private var initViewSize: CGSize!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        itemSlider = ImageSlider(frame: view.frame)
+        view.addSubview(itemSlider)
+        
         view.backgroundColor = UIColor.black
         initViewSize = self.view.frame.size
         initToolbar()
@@ -130,7 +143,7 @@ class ItemController: UIViewController {
         super.viewDidAppear(animated)
         
         statusBarHidden = true
-        setNeedsStatusBarAppearanceUpdate()
+        //setNeedsStatusBarAppearanceUpdate()
         
         itemsShuffle(on: appSettings.slideshowRandom)
     }
@@ -182,20 +195,29 @@ class ItemController: UIViewController {
     }
     
     private func toggleFullscreen() {
+        statusBarHidden = !statusBarHidden
         fullscreen = !fullscreen
         itemSlider.stopSlideshow()
         
         UIView.animate(withDuration: 0.2) {
             self.toolbar.alpha = self.fullscreen ? 0.0 : 1.0
             self.navbar.alpha = self.fullscreen ? 0.0 : 1.0
+           // self.setNeedsStatusBarAppearanceUpdate()
         }
+        
+        viewDidLayoutSubviews()
     }
 
     override open var prefersStatusBarHidden: Bool {
         return statusBarHidden
         //return false
+        //return fullscreen
     }
 
+    override var preferredStatusBarUpdateAnimation: UIStatusBarAnimation {
+        return .slide
+    }
+    
     override func viewDidLayoutSubviews() {
         navbar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 45)
         toolbar.frame = CGRect(x: 0, y: view.frame.height - 45, width: view.frame.width, height: 45)

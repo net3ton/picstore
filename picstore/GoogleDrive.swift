@@ -12,38 +12,102 @@ import GoogleAPIClientForREST
 
 let appGoogleDrive = GoogleDrive()
 
-class GoogleDrive: NSObject, GIDSignInDelegate, GIDSignInUIDelegate {
+class GoogleDrive: NSObject {
     private let driveService = GTLRDriveService()
     private var uiroot: UIViewController?
-    private var authCompletion: (() -> Void)?
+    //private var authCompletion: (() -> Void)?
     
     public var onFileDownloaded: ((URL, String) -> Void)?
 
-    public func start() {
-        GIDSignIn.sharedInstance().clientID = "586434866308-u600eh9utsdgclqbvv9vb3rr4h5bf010.apps.googleusercontent.com"
-        GIDSignIn.sharedInstance().delegate = self
-        GIDSignIn.sharedInstance().uiDelegate = self
-        GIDSignIn.sharedInstance().scopes = [kGTLRAuthScopeDrive]
-        GIDSignIn.sharedInstance().signInSilently()
+    public func handle(url: URL) -> Bool {
+        return GIDSignIn.sharedInstance.handle(url)
     }
-
-    public func handle(url: URL!, sourceApplication: String!, annotation: Any!) -> Bool {
-        return GIDSignIn.sharedInstance().handle(url, sourceApplication: sourceApplication, annotation: annotation)
+    
+    public func start() {
+        GIDSignIn.sharedInstance.restorePreviousSignIn { user, error in
+            self.didSignInFor(user: user, withError: error, onComplete: nil)
+        }
     }
 
     public func signIn(vc: UIViewController, completion: @escaping (() -> Void)) {
-        uiroot = vc
-        authCompletion = completion
-        GIDSignIn.sharedInstance().signIn()
+        GIDSignIn.sharedInstance.signIn(withPresenting: vc) { signInResult, error in
+            if let error = error {
+                print("[Google Drive] Failed to sign in! ERROR: " + error.localizedDescription)
+                return
+            }
+
+            guard let user = signInResult?.user else {
+                print("[Google Drive] Failed to sign in! No valid user returned!")
+                return
+            }
+            
+            let additionalScopes = [kGTLRAuthScopeDrive]
+            
+            // if we have permissions
+            if let grantedScopes = user.grantedScopes {
+                if additionalScopes.allSatisfy(grantedScopes.contains) {
+                    self.didSignInFor(user: user, withError: error, onComplete: completion)
+                    return
+                }
+            }
+
+            // request permissions first
+            user.addScopes(additionalScopes, presenting: vc) { signInResult, error in
+                self.didSignInFor(user: signInResult?.user, withError: error, onComplete: completion)
+            }
+        }
     }
 
+    func didSignInFor(user: GIDGoogleUser!, withError error: Error!, onComplete: (() -> Void)?) {
+        if let error = error {
+            print("[Google Drive] Failed to sign in! ERROR: " + error.localizedDescription)
+            return
+        }
+        
+        guard user != nil else {
+            print("[Google Drive] Failed to sign in! No valid user returned!")
+            return
+        }
+        
+        print("[Google Drive] sign in")
+        
+        if let grantedScopes = user.grantedScopes {
+            if grantedScopes.contains(kGTLRAuthScopeDrive) {
+                driveService.authorizer = user.fetcherAuthorizer
+            }
+            else {
+                print("[Google Drive] No granted scope for Drive!")
+            }
+        }
+
+        onComplete?()
+    }
+    
     public func signOut(completion: @escaping (() -> Void)) {
-        authCompletion = completion
-        GIDSignIn.sharedInstance().disconnect()
+        GIDSignIn.sharedInstance.disconnect { error in
+            self.didDisconnectWith(error: error, onComplete: completion)
+        }
     }
 
-    public func isLogined() -> Bool {
-        return GIDSignIn.sharedInstance().hasAuthInKeychain()
+    func didDisconnectWith(error: Error!, onComplete: (() -> Void)?) {
+        if let error = error {
+            print("[Google Drive] Failed to sign out! ERROR: " + error.localizedDescription)
+            return
+        }
+
+        print("[Google Drive] sign out")
+        driveService.authorizer = nil
+
+        onComplete?()
+    }
+    
+    public func isSignedIn() -> Bool {
+        //return GIDSignIn.sharedInstance().hasAuthInKeychain()
+        return GIDSignIn.sharedInstance.currentUser != nil
+    }
+    
+    public func isDriveEnabled() -> Bool {
+        return driveService.authorizer != nil
     }
 
     public func showFilePicker(vc: UIViewController) {
@@ -76,9 +140,11 @@ class GoogleDrive: NSObject, GIDSignInDelegate, GIDSignInUIDelegate {
         let queryGet = GTLRDriveQuery_FilesGet.queryForMedia(withFileId: fileId)
         let task = self.driveService.executeQuery(queryGet) { (ticket, result, error) -> Void in
             if error != nil {
-                print("[Google Drive] Failed to download file! Error: " + error!.localizedDescription)
-                waitView.dismiss(animated: true)
-                completion(nil)
+                DispatchQueue.main.async {
+                    print("[Google Drive] Failed to download file! Error: " + error!.localizedDescription)
+                    waitView.dismiss(animated: true)
+                    completion(nil)
+                }
                 return
             }
             
@@ -91,9 +157,11 @@ class GoogleDrive: NSObject, GIDSignInDelegate, GIDSignInUIDelegate {
             }
             */
             
-            print("[Google Drive] Download to url complete!")
-            waitView.dismiss(animated: true)
-            completion(downloadFileURL)
+            DispatchQueue.main.async {
+                print("[Google Drive] Download to url complete!")
+                waitView.dismiss(animated: true)
+                completion(downloadFileURL)
+            }
         }
         
         waitView.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { (_) in
@@ -114,46 +182,11 @@ class GoogleDrive: NSObject, GIDSignInDelegate, GIDSignInUIDelegate {
         
         let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
         loadingIndicator.hidesWhenStopped = true
-        loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.medium
         loadingIndicator.startAnimating()
         waitView.view.addSubview(loadingIndicator)
         
         return waitView
-    }
-
-    func sign(_ signIn: GIDSignIn!, didSignInFor user: GIDGoogleUser!, withError error: Error!) {
-        if let error = error {
-            print("[Google Drive] Failed to sign in! ERROR: " + error.localizedDescription)
-            return
-        }
-
-        print("[Google Drive] sign in")
-        driveService.authorizer = user.authentication.fetcherAuthorizer()
-        //print(driveService.authorizer)
-
-        authCompletion?()
-        authCompletion = nil
-    }
-
-    func sign(_ signIn: GIDSignIn!, didDisconnectWith user: GIDGoogleUser!, withError error: Error!) {
-        if let error = error {
-            print("[Google Drive] Failed to sign out! ERROR: " + error.localizedDescription)
-            return
-        }
-
-        print("[Google Drive] sign out")
-        driveService.authorizer = nil
-
-        authCompletion?()
-        authCompletion = nil
-    }
-
-    func sign(_ signIn: GIDSignIn!, present viewController: UIViewController!) {
-        uiroot?.present(viewController, animated: true)
-    }
-
-    func sign(_ signIn: GIDSignIn!, dismiss viewController: UIViewController!) {
-        viewController.dismiss(animated: true)
     }
 }
 
@@ -393,7 +426,7 @@ class GoogleDrivePicker: UITableViewController {
         
         let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
         loadingIndicator.hidesWhenStopped = true
-        loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.gray
+        loadingIndicator.activityIndicatorViewStyle = UIActivityIndicatorViewStyle.medium
         loadingIndicator.startAnimating()
         waitView?.view.addSubview(loadingIndicator)
 

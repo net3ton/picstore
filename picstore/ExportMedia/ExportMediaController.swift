@@ -42,7 +42,7 @@ class ExportMediaController: UITableViewController, ExportMediaNotify {
     func updateLabels()
     {
         let formatter = DateFormatter()
-        formatter.dateFormat = "dd LLLL YYYY"
+        formatter.dateFormat = "dd LLLL yyyy"
 
         labelDateFrom.text = formatter.string(from: exportSettings.from)
         labelDateTo.text = formatter.string(from: exportSettings.to)
@@ -50,18 +50,19 @@ class ExportMediaController: UITableViewController, ExportMediaNotify {
         labelSubfolders.text = EExportSubfolders.GetTitle(for: exportSettings.createSubFolders)
         labelExportQuality.text = String(format: "%d%%", Int(exportSettings.jpegQuality * 100))
         
-        switchNotPhotosAside.isOn = exportSettings.notPhotosAside
+        switchNotPhotosAside.isOn = exportSettings.isNotPhotosAside
     }
     
     @IBAction func onExportQualityChanged(_ sender: UISlider)
     {
         exportSettings.jpegQuality = sender.value
+        print("values:", sender.value)
         updateLabels()
     }
     
     @IBAction func onNotPhotosAsideChanged(_ sender: UISwitch)
     {
-        exportSettings.notPhotosAside = sender.isOn
+        exportSettings.isNotPhotosAside = sender.isOn
         updateLabels()
     }
     

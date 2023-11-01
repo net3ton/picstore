@@ -9,9 +9,9 @@
 import UIKit
 
 class ImageSliderItem: UIScrollView, UIScrollViewDelegate, UIGestureRecognizerDelegate {
-    /// representing page
+    // representing page
     public var page: Int = -1
-    /// position in scrollview
+    // position in scrollview
     public var pos: Int = 0
 
     public var onImageTap: (() -> Void)?
@@ -167,8 +167,8 @@ class ImageSlider: UIView {
     private let scrollView = UIScrollView()
     private var slideshowTimer: Timer?
 
-    /// count of advance views in both sides
-    /// and also current view (middle) index
+    // count of advance views in both sides
+    // and also current view (middle) index
     private let ADVANCE = 1
     private var pagesCount = 5
     private var pageCurrent: Int = 0
@@ -210,7 +210,7 @@ class ImageSlider: UIView {
         scrollView.showsVerticalScrollIndicator = false
         addSubview(scrollView)
 
-        /// current view + advance views in both sides
+        // current view + advance views in both sides
         let viewsCount = ADVANCE * 2 + 1
 
         for i in 0..<viewsCount {
@@ -260,7 +260,7 @@ class ImageSlider: UIView {
         let size = scrollView.frame.size
 
         for case let view as ImageSliderItem in scrollView.subviews {
-            /// current page should be in ADVANCE position
+            // current page should be in ADVANCE position
             let page = getNormalizedPage((view.pos - ADVANCE) + pageCurrent)
             if view.page != page {
                 view.page = page

@@ -36,7 +36,7 @@ class SettingsController: UITableViewController {
         checkTouchID.isOn = appSettings.passTouchID
         checkSlideshowRandom.isOn = appSettings.slideshowRandom
 
-        labelGoogleDrive.text = appGoogleDrive.isLogined() ? "Sign out" : "Sign in"
+        labelGoogleDrive.text = appGoogleDrive.isSignedIn() ? "Sign out" : "Sign in"
     }
     
     @IBAction func onTouchIDEnabled(_ sender: UISwitch) {
@@ -56,7 +56,7 @@ class SettingsController: UITableViewController {
         */
 
         if indexPath.section == 3 && indexPath.row == 0 {
-            if appGoogleDrive.isLogined() {
+            if appGoogleDrive.isSignedIn() {
                 appGoogleDrive.signOut() {
                     self.updateLabels()
                 }
